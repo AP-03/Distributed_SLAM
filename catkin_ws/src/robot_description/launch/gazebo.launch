@@ -1,0 +1,19 @@
+<launch>
+
+    <include file="$(find gazebo_ros)/launch/empty_world.launch"/>
+    
+
+    <param name="robot_description" textfile="$(find robot_description)/urdf/robot.urdf"/>
+    
+
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+        <param name="use_gui" value="false"/>
+    </node>
+    
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen"/>
+    
+
+    <node name="spawn_myagv" pkg="gazebo_ros" type="spawn_model" 
+          args="-urdf -model myAGV -param robot_description" />
+</launch>

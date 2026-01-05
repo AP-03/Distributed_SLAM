@@ -1,0 +1,21 @@
+<sensor name="X2_lidar" type="ray">
+    <ray>
+        <scan>
+            <horizontal>
+                <samples>360</samples>
+                <resolution>1</resolution>
+                <min_angles>-180</min_angles>
+                <max_angles>180</max_angles>
+            </horizontal>
+        </scan>
+        <range>
+            <min>0.1</min>
+            <max>12.0</max>
+            <resolution>0.01</resolution>
+        </range>
+    </ray>
+    <plugin name="X2_lidar_plugin" filename="libgazebo_ros_ray_sensor.so">
+        <topic>/scan</topic>
+        <frame_name>lidar_link</frame_name>
+    </plugin>
+</sensor>
