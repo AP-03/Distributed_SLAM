@@ -1,0 +1,58 @@
+<launch>
+
+    <!-- ============================================================
+         SLAM Comparison: Ground Truth vs Odometry (Live Playback)
+         ============================================================
+         Usage:
+           roslaunch slam_comparison compare_live.launch \
+               gt_bag:=/full/path/to/mocap.bag \
+               robot_bag:=/full/path/to/robot.bag
+
+         Optional args:
+           show_robot:=true       Load URDF model in RViz
+           rate:=1.0              Bag playback speed
+           swap_yz:=false         Swap mocap Y/Z axes
+           rigid_id:=1            Rigid body ID for mocap
+    -->
+
+    <!-- ===== Arguments ===== -->
+    <arg name="gt_bag"      doc="Path to the mocap ground truth bag file"/>
+    <arg name="robot_bag"   doc="Path to the robot (lidar/cam/odom) bag file"/>
+    <arg name="show_robot"  default="true"  doc="Show URDF robot model in RViz"/>
+    <arg name="rate"        default="1.0"   doc="Playback rate multiplier"/>
+    <arg name="rigid_id"    default="1"     doc="PhaseSpace rigid body ID"/>
+    <arg name="swap_yz"     default="false" doc="Swap mocap Y/Z (Y-up to Z-up)"/>
+
+    <!-- Use sim time from bag playback -->
+    <param name="/use_sim_time" value="true"/>
+
+    <!-- ===== Play both bags simultaneously ===== -->
+    <node name="rosbag_play" pkg="rosbag" type="play"
+          args="--clock -r $(arg rate) $(arg gt_bag) $(arg robot_bag)"
+          output="screen"/>
+
+    <!-- ===== GT Comparison Node ===== -->
+    <node name="gt_comparison_node" pkg="slam_comparison" type="gt_comparison_node.py"
+          output="screen">
+        <param name="rigid_body_id"  value="$(arg rigid_id)"/>
+        <param name="auto_align"     value="true"/>
+        <param name="swap_mocap_yz"  value="$(arg swap_yz)"/>
+        <param name="gt_frame"       value="map"/>
+        <param name="odom_frame"     value="odom"/>
+        <param name="path_downsample" value="2"/>
+    </node>
+
+    <!-- ===== (Optional) Robot URDF Display ===== -->
+    <group if="$(arg show_robot)">
+        <param name="robot_description"
+               textfile="$(find robot_description)/urdf/robot.urdf"/>
+        <node name="robot_state_publisher" pkg="robot_state_publisher"
+              type="robot_state_publisher" output="screen"/>
+    </group>
+
+    <!-- ===== RViz ===== -->
+    <node name="rviz" pkg="rviz" type="rviz"
+          args="-d $(find slam_comparison)/config/comparison.rviz"
+          output="screen"/>
+
+</launch>

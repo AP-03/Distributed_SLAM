@@ -1,0 +1,29 @@
+<launch>
+
+    <!-- ============================================================
+         SLAM Comparison: Offline Preprocessing
+         ============================================================
+         Usage:
+           roslaunch slam_comparison preprocess.launch \
+               gt_bag:=/full/path/to/mocap.bag \
+               robot_bag:=/full/path/to/robot.bag \
+               output_dir:=/path/to/output
+    -->
+
+    <arg name="gt_bag"     doc="Path to the mocap ground truth bag file"/>
+    <arg name="robot_bag"  doc="Path to the robot bag file"/>
+    <arg name="output_dir" default="$(find slam_comparison)/output"
+         doc="Directory for output plots, CSV, and stats"/>
+    <arg name="rigid_id"   default="1" doc="PhaseSpace rigid body ID"/>
+    <arg name="swap_yz"    default="false" doc="Swap mocap Y/Z axes"/>
+
+    <node name="preprocess_bags" pkg="slam_comparison" type="preprocess_bags.py"
+          output="screen">
+        <param name="gt_bag"          value="$(arg gt_bag)"/>
+        <param name="robot_bag"       value="$(arg robot_bag)"/>
+        <param name="output_dir"      value="$(arg output_dir)"/>
+        <param name="rigid_body_id"   value="$(arg rigid_id)"/>
+        <param name="swap_mocap_yz"   value="$(arg swap_yz)"/>
+    </node>
+
+</launch>

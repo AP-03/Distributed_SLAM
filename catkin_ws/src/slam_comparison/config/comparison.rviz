@@ -1,0 +1,175 @@
+Panels:
+  - Class: rviz/Displays
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Global Options1
+        - /GT Path1
+        - /Odom Path1
+      Splitter Ratio: 0.5
+  - Class: rviz/Views
+    Name: Views
+  - Class: rviz/Time
+    Name: Time
+    SyncMode: 0
+    SyncSource: LaserScan
+
+Visualization Manager:
+  Class: ""
+  Displays:
+    # ---- Grid ----
+    - Class: rviz/Grid
+      Name: Grid
+      Plane Cell Count: 20
+      Cell Size: 1
+      Color: 100; 100; 100
+      Alpha: 0.3
+      Enabled: true
+      Line Style:
+        Value: Lines
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Plane: XY
+      Reference Frame: map
+
+    # ---- Ground Truth Path (GREEN) ----
+    - Class: rviz/Path
+      Name: GT Path
+      Topic: /gt/path
+      Color: 0; 255; 0
+      Alpha: 1
+      Buffer Length: 1
+      Line Style: Lines
+      Line Width: 0.03
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0.01
+      Enabled: true
+
+    # ---- Odometry Path (RED) ----
+    - Class: rviz/Path
+      Name: Odom Path
+      Topic: /odom/path
+      Color: 255; 50; 50
+      Alpha: 1
+      Buffer Length: 1
+      Line Style: Lines
+      Line Width: 0.03
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Enabled: true
+
+    # ---- GT Arrow Marker (GREEN) ----
+    - Class: rviz/Marker
+      Name: GT Marker
+      Marker Topic: /gt/marker
+      Queue Size: 1
+      Enabled: true
+
+    # ---- Odom Arrow Marker (RED) ----
+    - Class: rviz/Marker
+      Name: Odom Marker
+      Marker Topic: /odom/marker
+      Queue Size: 1
+      Enabled: true
+
+    # ---- Error Line (YELLOW) ----
+    - Class: rviz/Marker
+      Name: Error Line
+      Marker Topic: /error/marker
+      Queue Size: 1
+      Enabled: true
+
+    # ---- Error Text ----
+    - Class: rviz/Marker
+      Name: Error Text
+      Marker Topic: /error/text
+      Queue Size: 1
+      Enabled: true
+
+    # ---- Robot Model (optional, requires URDF) ----
+    - Class: rviz/RobotModel
+      Name: Robot Model
+      Robot Description: robot_description
+      TF Prefix: ""
+      Update Interval: 0
+      Alpha: 0.7
+      Enabled: true
+
+    # ---- LaserScan ----
+    - Class: rviz/LaserScan
+      Name: LaserScan
+      Topic: /scan
+      Queue Size: 1
+      Size (m): 0.03
+      Color Transformer: FlatColor
+      Color: 0; 170; 255
+      Alpha: 0.6
+      Style: Points
+      Decay Time: 0
+      Enabled: true
+
+    # ---- TF ----
+    - Class: rviz/TF
+      Name: TF
+      Marker Scale: 0.3
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Update Interval: 0
+      Enabled: false
+      Frame Timeout: 15
+      Frames:
+        All Enabled: true
+
+    # ---- Current GT Pose ----
+    - Class: rviz/Pose
+      Name: GT Pose
+      Topic: /gt/pose
+      Color: 0; 255; 0
+      Alpha: 0.8
+      Shape: Arrow
+      Arrow Length: 0.3
+      Enabled: true
+
+  Enabled: true
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: map
+    Frame Rate: 30
+  Tools:
+    - Class: rviz/MoveCamera
+    - Class: rviz/FocusCamera
+    - Class: rviz/Measure
+  Value: true
+  Views:
+    Current:
+      Class: rviz/ThirdPersonFollower
+      Name: ThirdPersonFollower
+      Distance: 8
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.05
+      Invert Z Axis: false
+      Near Clip Distance: 0.01
+      Pitch: 1.0
+      Target Frame: base_link
+      Yaw: 3.14
+    Saved: ~
+
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 900
+  Width: 1400
+  X: 50
+  Y: 50

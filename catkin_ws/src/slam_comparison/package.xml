@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>slam_comparison</name>
+  <version>1.0.0</version>
+  <description>Compare ground truth (mocap) with robot odometry trajectories</description>
+  <maintainer email="adrian@todo.todo">Adrian</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>rospy</depend>
+  <depend>rosbag</depend>
+  <depend>std_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>visualization_msgs</depend>
+  <depend>tf2_ros</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>rviz</depend>
+</package>
