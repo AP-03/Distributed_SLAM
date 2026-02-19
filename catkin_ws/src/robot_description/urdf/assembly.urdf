@@ -3,23 +3,12 @@
   <link name="base_link">
     <visual>
       <geometry>
-        <mesh filename="package://robot_description/meshes/stl/assembly.stl" scale="1 1 1"/>
+        <mesh filename="package://robot_description/meshes/stl/assembly.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-    </visual>
-  </link>
-
-  <joint name="camera_mount_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="camera_mount_link"/>
-    <origin xyz="-0.269921 0.156212 -0.093832" rpy="-3.133687 0 3.141593"/>
-  </joint>
-  <link name="camera_mount_link">
-    <visual>
-      <geometry>
-        <mesh filename="package://robot_description/meshes/stl/depth_camera_mount.stl" scale="1 1 1"/>
-      </geometry>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <material name="light_grey">
+        <color rgba="0.75 0.75 0.75 1.0"/>
+      </material>
     </visual>
   </link>
 
@@ -28,14 +17,7 @@
     <child link="camera_link"/>
     <origin xyz="-0.300426 0.226662 -0.100389" rpy="-3.133687 0 3.141593"/>
   </joint>
-  <link name="camera_link">
-    <visual>
-      <geometry>
-        <mesh filename="package://robot_description/meshes/stl/intel_realsense_d455.stl" scale="1 1 1"/>
-      </geometry>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-    </visual>
-  </link>
+  <link name="camera_link"/>
 
   <joint name="camera_optical_joint" type="fixed">
     <parent link="camera_link"/>
