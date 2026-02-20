@@ -5,7 +5,7 @@
       <geometry>
         <mesh filename="package://robot_description/meshes/stl/assembly.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin xyz="0 0 0" rpy="1.570796 0 0"/>
+      <origin xyz="0.299996 0.032674 -0.229947" rpy="1.570796 0 0"/>
       <material name="light_grey">
         <color rgba="0.75 0.75 0.75 1.0"/>
       </material>
@@ -22,14 +22,14 @@
   <joint name="mount_joint" type="fixed">
     <parent link="base_link"/>
     <child link="mount_link"/>
-    <origin xyz="-0.269921 0.093832 0.156212" rpy="1.578702 0 3.141593"/>
+    <origin xyz="-0.299921 0.064841 0.283945" rpy="1.578702 0 3.141593"/>
   </joint>
   <link name="mount_link"/>
 
   <joint name="camera_joint" type="fixed">
     <parent link="mount_link"/>
     <child link="camera_link"/>
-    <origin xyz="0.030505 0.070500 0.006000" rpy="0 0 0"/>
+    <origin xyz="0.000505 -0.057000 0.023000" rpy="0 0 0"/>
   </joint>
   <link name="camera_link"/>
 
