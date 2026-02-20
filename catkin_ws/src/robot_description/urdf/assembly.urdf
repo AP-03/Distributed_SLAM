@@ -22,14 +22,14 @@
   <joint name="mount_joint" type="fixed">
     <parent link="base_link"/>
     <child link="mount_link"/>
-    <origin xyz="-0.269921 0.156212 -0.093832" rpy="-3.133687 0 3.141593"/>
+    <origin xyz="-0.269921 0.093832 0.156212" rpy="1.578702 0 3.141593"/>
   </joint>
   <link name="mount_link"/>
 
   <joint name="camera_joint" type="fixed">
-    <parent link="base_link"/>
+    <parent link="mount_link"/>
     <child link="camera_link"/>
-    <origin xyz="-0.300426 0.226662 -0.100389" rpy="-3.133687 0 3.141593"/>
+    <origin xyz="0.030505 0.070500 0.006000" rpy="0 0 0"/>
   </joint>
   <link name="camera_link"/>
 
