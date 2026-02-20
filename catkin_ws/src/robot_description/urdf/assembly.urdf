@@ -5,12 +5,26 @@
       <geometry>
         <mesh filename="package://robot_description/meshes/stl/assembly.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="1.570796 0 0"/>
       <material name="light_grey">
         <color rgba="0.75 0.75 0.75 1.0"/>
       </material>
     </visual>
   </link>
+
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="lidar_link"/>
+
+  <joint name="mount_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="mount_link"/>
+    <origin xyz="-0.269921 0.156212 -0.093832" rpy="-3.133687 0 3.141593"/>
+  </joint>
+  <link name="mount_link"/>
 
   <joint name="camera_joint" type="fixed">
     <parent link="base_link"/>
