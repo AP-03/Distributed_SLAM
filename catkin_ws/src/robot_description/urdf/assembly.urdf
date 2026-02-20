@@ -5,14 +5,14 @@
   <joint name="base_to_myagv" type="fixed">
     <parent link="base_link"/>
     <child link="myagv_link"/>
-    <origin xyz="0.049350 -0.012983 -0.117401" rpy="0 0 0"/>
+    <origin xyz="-0.018406 0.295891 -0.159293" rpy="1.578702 0.007906 1.570796"/>
   </joint>
   <link name="myagv_link">
     <visual>
       <geometry>
         <mesh filename="package://robot_description/meshes/stl/assembly.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin xyz="0 0 0" rpy="1.570796 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <material name="light_grey">
         <color rgba="0.75 0.75 0.75 1.0"/>
       </material>
@@ -34,17 +34,10 @@
   </joint>
   <link name="odom_link"/>
 
-  <joint name="lidar_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="lidar_link"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-  </joint>
-  <link name="lidar_link"/>
-
   <joint name="mount_joint" type="fixed">
     <parent link="base_link"/>
     <child link="mount_link"/>
-    <origin xyz="-0.220571 0.143229 -0.211233" rpy="-3.133687 0 3.141593"/>
+    <origin xyz="-0.111000 0.027219 -0.000215" rpy="1.570796 -0.007906 -1.570796"/>
   </joint>
   <link name="mount_link"/>
 
