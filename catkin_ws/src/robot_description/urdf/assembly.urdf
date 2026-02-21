@@ -1,36 +1,43 @@
 <?xml version="1.0"?>
 <robot name="myagv_assembly">
-  <link name="base_footprint"/>
+  <link name="base_link"/>
 
-  <joint name="base_footprint_to_base_link" type="fixed">
-    <parent link="base_footprint"/>
-    <child link="base_link"/>
-    <origin xyz="0 0 0.23" rpy="0 0 0"/>
+  <joint name="base_to_myagv" type="fixed">
+    <parent link="base_link"/>
+    <child link="myagv_link"/>
+    <origin xyz="-0.018406 0.295891 -0.159293" rpy="1.578702 0.007906 1.570796"/>
   </joint>
-
-  <link name="base_link">
+  <link name="myagv_link">
     <visual>
       <geometry>
         <mesh filename="package://robot_description/meshes/stl/assembly.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin xyz="0 0 0" rpy="1.570796 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <material name="light_grey">
         <color rgba="0.75 0.75 0.75 1.0"/>
       </material>
     </visual>
   </link>
 
-  <joint name="lidar_joint" type="fixed">
+  <!-- Keep lidar_link and odom_link coincident with base_link -->
+  <joint name="base_to_lidar" type="fixed">
     <parent link="base_link"/>
     <child link="lidar_link"/>
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
   <link name="lidar_link"/>
 
+  <joint name="base_to_odom" type="fixed">
+    <parent link="base_link"/>
+    <child link="odom_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="odom_link"/>
+
   <joint name="mount_joint" type="fixed">
     <parent link="base_link"/>
     <child link="mount_link"/>
-    <origin xyz="-0.269921 0.093832 0.156212" rpy="1.578702 0 3.141593"/>
+    <origin xyz="-0.111000 0.027219 -0.000215" rpy="1.570796 -0.007906 -1.570796"/>
   </joint>
   <link name="mount_link"/>
 
