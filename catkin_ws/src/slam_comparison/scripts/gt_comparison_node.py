@@ -37,6 +37,8 @@ class GTComparisonNode(object):
         self.gt_frame = rospy.get_param('~gt_frame', 'map')
         self.odom_frame = rospy.get_param('~odom_frame', 'odom')
         self.robot_frame = rospy.get_param('~robot_frame', 'base_link')
+        self.camera_frame= rospy.get_param('~camera_frame', 'camera_optical_frame')
+        self.lidar_frame= rospy.get_param('~lidar_frame', 'lidar_link')
         self.auto_align = rospy.get_param('~auto_align', True)
         self.path_downsample = rospy.get_param('~path_downsample', 3)
 
