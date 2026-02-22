@@ -25,10 +25,10 @@
   <link name="base_link"/>
 
   <!-- Visual mesh -->
-  <joint name="base_to_myagv" type="fixed"> 
+  <joint name="base_to_myagv" type="fixed">
     <parent link="base_link"/>
     <child link="myagv_link"/>
-    <origin xyz="-0.018406 0.295891 0.159293" rpy="1.578702 0.007906 1.570796"/>
+    <origin xyz="-0.018406 0.295891 -0.159293" rpy="1.578702 0.007906 1.570796"/>
   </joint>
   <link name="myagv_link">
     <visual>
