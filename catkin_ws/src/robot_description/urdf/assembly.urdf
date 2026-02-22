@@ -1,34 +1,11 @@
 <?xml version="1.0"?>
 <robot name="myagv_assembly">
-
-  <!-- ============================================================
-       TF CHAIN OVERVIEW
-       ============================================================
-       From the bag file (you do NOT define these):
-         odom -> base_footprint -> base_link    (wheel odometry)
-         base_footprint -> laser_frame           (manufacturer lidar calibration)
-         base_footprint -> base_up
-         camera_link -> camera_depth_frame -> camera_depth_optical_frame
-         camera_link -> camera_color_frame -> camera_color_optical_frame
-         camera_link -> camera_aligned_depth_to_color_frame
-
-       From this URDF via robot_state_publisher:
-         base_link -> myagv_link                 (visual mesh)
-         base_link -> mount_link -> camera_link -> camera_optical_frame
-         base_link -> mocap_link                 (for mocap ground truth)
-
-       DO NOT define odom, base_footprint, lidar_link, laser_frame,
-       or the camera depth/color sub-frames here — they come from
-       the bag and you would create conflicts.
-       ============================================================ -->
-
   <link name="base_link"/>
 
-  <!-- Visual mesh -->
   <joint name="base_to_myagv" type="fixed">
     <parent link="base_link"/>
     <child link="myagv_link"/>
-    <origin xyz="-0.018406 0.295891 -0.159293" rpy="1.578702 0.007906 1.570796"/>
+    <origin xyz="-0.033431 0.298771 -0.159316" rpy="1.578702 0.007906 1.570796"/>
   </joint>
   <link name="myagv_link">
     <visual>
@@ -42,11 +19,25 @@
     </visual>
   </link>
 
-  <!-- Camera mount and camera -->
+  <!-- Keep lidar_link and odom_link coincident with base_link -->
+  <joint name="base_to_lidar" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="lidar_link"/>
+
+  <joint name="base_to_odom" type="fixed">
+    <parent link="base_link"/>
+    <child link="odom_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="odom_link"/>
+
   <joint name="mount_joint" type="fixed">
     <parent link="base_link"/>
     <child link="mount_link"/>
-    <origin xyz="-0.111000 0.027219 -0.000215" rpy="1.570796 -0.007906 -1.570796"/>
+    <origin xyz="-0.126025 0.030099 -0.000238" rpy="1.570796 -0.007906 -1.570796"/>
   </joint>
   <link name="mount_link"/>
 
@@ -60,30 +51,22 @@
   <joint name="camera_optical_joint" type="fixed">
     <parent link="camera_link"/>
     <child link="camera_optical_frame"/>
-    <!-- Standard ROS optical frame: Z-forward, X-right, Y-down -->
     <origin xyz="0 0 0" rpy="-1.570796 0 -1.570796"/>
   </joint>
   <link name="camera_optical_frame"/>
 
-<<<<<<< HEAD
-  <!-- Mocap reference point.
-       TODO: Measure the offset from base_link to the divot where
-       your reference mocap LED sits. Your mocap system will publish
-       mocap_world -> mocap_link for ground truth. -->
-  <joint name="base_to_mocap" type="fixed">
+  <joint name="base_to_led_marker" type="fixed">
     <parent link="base_link"/>
-    <child link="mocap_link"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <child link="led_marker_link"/>
+    <origin xyz="-0.015025 0.002880 -0.000023" rpy="0 0 0"/>
   </joint>
-  <link name="mocap_link"/>
+  <link name="led_marker_link"/>
 
-</robot>
-=======
   <!--
   Conversion notes (from Assembly_placements.json, units in mm unless noted):
 
   Base frame (global from Fusion):
-    base_link_global = (-49.35, 12.983, 117.401)
+    base_link_global = (-34.325, 10.103, 117.424)
     base_link_rpy = (0, 0, 0)
 
   Relative transform rule used for URDF joints:
@@ -94,19 +77,24 @@
 
   Example calculations (global -> relative):
     myAGV v2 global = (-67.756, 308.874, -41.892)
-    p_rel = (-67.756, 308.874, -41.892) - (-49.35, 12.983, 117.401)
-          = (-18.406, 295.891, -159.293)  mm
+    p_rel = (-67.756, 308.874, -41.892) - (-34.325, 10.103, 117.424)
+          = (-33.431, 298.771, -159.316)  mm
     rpy_rel = (1.578702, 0.007906, 1.570796)
 
     DepthCamera_Mount v8 global = (-160.350, 40.202, 117.186)
-    p_rel = (-160.350, 40.202, 117.186) - (-49.35, 12.983, 117.401)
-          = (-111.000, 27.219, -0.215)   mm
+    p_rel = (-160.350, 40.202, 117.186) - (-34.325, 10.103, 117.424)
+          = (-126.025, 30.099, -0.238)   mm
     rpy_rel = (1.570796, -0.007906, -1.570796)
 
     Intel Realsense D455 v2 global = (-166.350, 10.256, 187.925)
-    p_rel = (-166.350, 10.256, 187.925) - (-49.35, 12.983, 117.401)
-          = (-117.000, -2.727, 70.524)  mm
+    p_rel = (-166.350, 10.256, 187.925) - (-34.325, 10.103, 117.424)
+          = (-132.025, 0.153, 70.501)  mm
     rpy_rel = (1.570796, -0.007906, -1.570796)
+
+    LED marker global = (-49.35, 12.983, 117.401)
+    p_rel = (-49.35, 12.983, 117.401) - (-34.325, 10.103, 117.424)
+          = (-15.025, 2.880, -0.023)  mm
+    rpy_rel = (0, 0, 0)
 
   Camera relative to mount (from JSON):
     camera_rel_mount = (30.505, 70.500, 6.000) mm, rpy = (0,0,0)
@@ -114,4 +102,3 @@
   All URDF xyz values are meters (mm / 1000).
   -->
 </robot>
->>>>>>> 3864b3397b45fc6cd2471a840a5a83375162010e
