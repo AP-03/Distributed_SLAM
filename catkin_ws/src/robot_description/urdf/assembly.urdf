@@ -65,6 +65,7 @@
   </joint>
   <link name="camera_optical_frame"/>
 
+<<<<<<< HEAD
   <!-- Mocap reference point.
        TODO: Measure the offset from base_link to the divot where
        your reference mocap LED sits. Your mocap system will publish
@@ -77,3 +78,40 @@
   <link name="mocap_link"/>
 
 </robot>
+=======
+  <!--
+  Conversion notes (from Assembly_placements.json, units in mm unless noted):
+
+  Base frame (global from Fusion):
+    base_link_global = (-49.35, 12.983, 117.401)
+    base_link_rpy = (0, 0, 0)
+
+  Relative transform rule used for URDF joints:
+    p_rel = p_part_global - p_base_global
+    R_rel = R_base^T * R_part
+  Since base_link_rpy = (0,0,0), R_base is identity and:
+    p_rel = p_part_global - p_base_global
+
+  Example calculations (global -> relative):
+    myAGV v2 global = (-67.756, 308.874, -41.892)
+    p_rel = (-67.756, 308.874, -41.892) - (-49.35, 12.983, 117.401)
+          = (-18.406, 295.891, -159.293)  mm
+    rpy_rel = (1.578702, 0.007906, 1.570796)
+
+    DepthCamera_Mount v8 global = (-160.350, 40.202, 117.186)
+    p_rel = (-160.350, 40.202, 117.186) - (-49.35, 12.983, 117.401)
+          = (-111.000, 27.219, -0.215)   mm
+    rpy_rel = (1.570796, -0.007906, -1.570796)
+
+    Intel Realsense D455 v2 global = (-166.350, 10.256, 187.925)
+    p_rel = (-166.350, 10.256, 187.925) - (-49.35, 12.983, 117.401)
+          = (-117.000, -2.727, 70.524)  mm
+    rpy_rel = (1.570796, -0.007906, -1.570796)
+
+  Camera relative to mount (from JSON):
+    camera_rel_mount = (30.505, 70.500, 6.000) mm, rpy = (0,0,0)
+
+  All URDF xyz values are meters (mm / 1000).
+  -->
+</robot>
+>>>>>>> 3864b3397b45fc6cd2471a840a5a83375162010e
