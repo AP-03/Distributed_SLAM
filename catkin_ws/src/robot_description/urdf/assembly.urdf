@@ -5,7 +5,7 @@
   <joint name="base_to_myagv" type="fixed">
     <parent link="base_link"/>
     <child link="myagv_link"/>
-    <origin xyz="-0.033431 0.298771 -0.159316" rpy="1.578702 0.007906 1.570796"/>
+    <origin xyz="-0.033431 0.298771 -0.041892" rpy="1.578702 0.007906 1.570796"/>
   </joint>
   <link name="myagv_link">
     <visual>
@@ -37,7 +37,7 @@
   <joint name="mount_joint" type="fixed">
     <parent link="base_link"/>
     <child link="mount_link"/>
-    <origin xyz="-0.126025 0.030099 -0.000238" rpy="1.570796 -0.007906 -1.570796"/>
+    <origin xyz="-0.126025 0.030099 0.117186" rpy="1.570796 -0.007906 -1.570796"/>
   </joint>
   <link name="mount_link"/>
 
@@ -58,7 +58,7 @@
   <joint name="base_to_led_marker" type="fixed">
     <parent link="base_link"/>
     <child link="led_marker_link"/>
-    <origin xyz="-0.015025 0.002880 -0.000023" rpy="0 0 0"/>
+    <origin xyz="-0.015025 0.002880 0.117401" rpy="0 0 0"/>
   </joint>
   <link name="led_marker_link"/>
 
@@ -66,7 +66,7 @@
   Conversion notes (from Assembly_placements.json, units in mm unless noted):
 
   Base frame (global from Fusion):
-    base_link_global = (-34.325, 10.103, 117.424)
+    base_link_global = (-34.325, 10.103, 0.000)
     base_link_rpy = (0, 0, 0)
 
   Relative transform rule used for URDF joints:
@@ -77,23 +77,23 @@
 
   Example calculations (global -> relative):
     myAGV v2 global = (-67.756, 308.874, -41.892)
-    p_rel = (-67.756, 308.874, -41.892) - (-34.325, 10.103, 117.424)
-          = (-33.431, 298.771, -159.316)  mm
+    p_rel = (-67.756, 308.874, -41.892) - (-34.325, 10.103, 0.000)
+          = (-33.431, 298.771, -41.892)  mm
     rpy_rel = (1.578702, 0.007906, 1.570796)
 
     DepthCamera_Mount v8 global = (-160.350, 40.202, 117.186)
-    p_rel = (-160.350, 40.202, 117.186) - (-34.325, 10.103, 117.424)
-          = (-126.025, 30.099, -0.238)   mm
+    p_rel = (-160.350, 40.202, 117.186) - (-34.325, 10.103, 0.000)
+          = (-126.025, 30.099, 117.186)   mm
     rpy_rel = (1.570796, -0.007906, -1.570796)
 
     Intel Realsense D455 v2 global = (-166.350, 10.256, 187.925)
-    p_rel = (-166.350, 10.256, 187.925) - (-34.325, 10.103, 117.424)
-          = (-132.025, 0.153, 70.501)  mm
+    p_rel = (-166.350, 10.256, 187.925) - (-34.325, 10.103, 0.000)
+          = (-132.025, 0.153, 187.925)  mm
     rpy_rel = (1.570796, -0.007906, -1.570796)
 
     LED marker global = (-49.35, 12.983, 117.401)
-    p_rel = (-49.35, 12.983, 117.401) - (-34.325, 10.103, 117.424)
-          = (-15.025, 2.880, -0.023)  mm
+    p_rel = (-49.35, 12.983, 117.401) - (-34.325, 10.103, 0.000)
+          = (-15.025, 2.880, 117.401)  mm
     rpy_rel = (0, 0, 0)
 
   Camera relative to mount (from JSON):
