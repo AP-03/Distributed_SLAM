@@ -1,0 +1,26 @@
+<launch>
+  <arg name="robot_id" default="robot_01"/>
+  <arg name="scenario" default="debug"/>
+  <arg name="run_id" default="$(env USER)_debug_run"/>
+  <arg name="output_root" default="$(env HOME)/Distributed_SLAM/runs"/>
+  <arg name="operator" default="$(env USER)"/>
+  <arg name="notes" default=""/>
+  <arg name="split" default="false"/>
+  <arg name="split_size_mb" default="4096"/>
+
+  <node name="dataset_record_one_robot"
+        pkg="dataset_recording"
+        type="record_one_robot.py"
+        output="screen"
+        required="true">
+    <param name="robot_id" value="$(arg robot_id)"/>
+    <param name="scenario" value="$(arg scenario)"/>
+    <param name="run_id" value="$(arg run_id)"/>
+    <param name="output_root" value="$(arg output_root)"/>
+    <param name="operator" value="$(arg operator)"/>
+    <param name="notes" value="$(arg notes)"/>
+    <param name="split" value="$(arg split)"/>
+    <param name="split_size_mb" value="$(arg split_size_mb)"/>
+    <rosparam command="load" file="$(find dataset_recording)/config/one_robot_topics.yaml"/>
+  </node>
+</launch>

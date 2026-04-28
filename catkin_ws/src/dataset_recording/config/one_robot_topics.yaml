@@ -1,0 +1,17 @@
+topics:
+  - /tf
+  - /tf_static
+  - /phasespace/rigids
+  - /phasespace/markers
+  - /phasespace/cameras
+  - /phasespace/errors
+  - /gt/robot_01/pose
+  - /gt/robot_01/odom
+  - /gt/robot_01/path
+  - /robot_01/odom
+  - /robot_01/scan
+  - /robot_01/imu
+  - /robot_01/camera/color/image_raw
+  - /robot_01/camera/color/camera_info
+  - /robot_01/camera/depth/image_rect_raw
+  - /robot_01/camera/depth/camera_info

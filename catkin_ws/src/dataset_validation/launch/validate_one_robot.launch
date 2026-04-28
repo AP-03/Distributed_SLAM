@@ -1,0 +1,10 @@
+<launch>
+  <arg name="robot_id" default="robot_01"/>
+  <arg name="run_dir"/>
+
+  <node name="validate_one_robot_run"
+        pkg="dataset_validation"
+        type="validate_run.py"
+        output="screen"
+        args="--robot_id $(arg robot_id) --run_dir $(arg run_dir)"/>
+</launch>
