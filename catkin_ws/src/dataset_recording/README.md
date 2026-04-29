@@ -27,3 +27,27 @@ runs/<run_id>/
 Start the robot-side bringup separately until the robot code is merged into
 this repository. Missing topics are visible immediately in the recorder output
 and will be flagged by `dataset_validation`.
+
+## Mocap-Only Debug Recording
+
+To wave loose LEDs through the capture space and record the raw mocap stream:
+
+```bash
+roslaunch dataset_recording record_mocap_debug.launch \
+  run_id:=20260429_mocap_led_wave_01 \
+  server_ip:=192.168.1.230
+```
+
+The bag is written to:
+
+```text
+~/Distributed_SLAM/runs/<run_id>/raw/mocap_debug.bag
+```
+
+Replay it with:
+
+```bash
+roslaunch dataset_ground_truth mocap_debug_playback.launch \
+  bag:=$HOME/Distributed_SLAM/runs/<run_id>/raw/mocap_debug.bag \
+  loop:=true
+```
