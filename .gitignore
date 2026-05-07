@@ -25,6 +25,7 @@ __pycache__/
 *.swp
 *~
 *.Zone.Identifier
+*:Zone.Identifier
 Zone.Identifier
 
 ### Generated TF frame graph artifacts
