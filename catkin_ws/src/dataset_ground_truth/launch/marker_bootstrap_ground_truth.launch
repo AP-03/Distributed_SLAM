@@ -1,0 +1,15 @@
+<launch>
+  <arg name="robot_id" default="robot_01"/>
+  <arg name="config" default="$(find dataset_ground_truth)/config/robot_01_marker_bootstrap.yaml"/>
+  <arg name="world_frame" default="mocap_world"/>
+
+  <rosparam command="load" file="$(arg config)"/>
+
+  <node name="$(arg robot_id)_marker_bootstrap_ground_truth"
+        pkg="dataset_ground_truth"
+        type="marker_bootstrap_ground_truth_node.py"
+        output="screen">
+    <param name="robot_id" value="$(arg robot_id)"/>
+    <param name="world_frame" value="$(arg world_frame)"/>
+  </node>
+</launch>

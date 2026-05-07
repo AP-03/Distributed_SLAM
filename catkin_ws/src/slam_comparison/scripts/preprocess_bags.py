@@ -18,6 +18,8 @@ Usage:
 Or standalone:
   python preprocess_bags.py --gt_bag /path/to/mocap.bag \
                             --robot_bag /path/to/robot.bag \
+                            --gt_topic /gt/robot_01/odom \
+                            --odom_topic /odom \
                             --output_dir ./output
 
 Works with ROS Melodic (Python 2.7 compatible).
@@ -131,24 +133,39 @@ def extract_gt_poses(bag_path, rigid_id=1, topic='/phasespace/rigids', swap_yz=F
     return poses
 
 
-def extract_odom_poses(bag_path, topic='/odom'):
-    """Extract odometry poses from the robot bag."""
-    print("Reading robot bag: {}".format(bag_path))
+def extract_pose_topic(bag_path, topic, label, use_bag_time=False):
+    """Extract poses from nav_msgs/Odometry or geometry_msgs/PoseStamped."""
+    print("Reading {} bag: {}".format(label, bag_path))
     poses = []
 
     bag = rosbag.Bag(bag_path, 'r')
     count = 0
     for topic_name, msg, t in bag.read_messages(topics=[topic]):
-        p = msg.pose.pose.position
-        q = msg.pose.pose.orientation
-        time_sec = msg.header.stamp.to_sec()
-        if time_sec == 0:
+        if hasattr(msg, 'pose') and hasattr(msg.pose, 'pose'):
+            pose = msg.pose.pose
+        elif hasattr(msg, 'pose'):
+            pose = msg.pose
+        else:
+            continue
+
+        p = pose.position
+        q = pose.orientation
+        if use_bag_time:
             time_sec = t.to_sec()
+        else:
+            time_sec = msg.header.stamp.to_sec()
+            if time_sec == 0:
+                time_sec = t.to_sec()
         poses.append((time_sec, p.x, p.y, p.z, q.x, q.y, q.z, q.w))
         count += 1
     bag.close()
-    print("  Extracted {} odom poses".format(count))
+    print("  Extracted {} poses from {}".format(count, topic))
     return poses
+
+
+def extract_odom_poses(bag_path, topic='/odom', use_bag_time=False):
+    """Extract odometry poses from the robot bag."""
+    return extract_pose_topic(bag_path, topic, 'robot', use_bag_time=use_bag_time)
 
 
 def compute_alignment(gt_poses, odom_poses):
@@ -385,6 +402,10 @@ def main():
     output_dir = None
     rigid_id = 1
     swap_yz = False
+    gt_topic = '/gt/robot_01/odom'
+    odom_topic = '/odom'
+    use_bag_time_for_gt = False
+    use_bag_time_for_odom = False
 
     # Try ROS params first
     if HAS_ROS:
@@ -395,6 +416,10 @@ def main():
             output_dir = rospy.get_param('~output_dir', None)
             rigid_id = rospy.get_param('~rigid_body_id', 1)
             swap_yz = rospy.get_param('~swap_mocap_yz', False)
+            gt_topic = rospy.get_param('~gt_topic', gt_topic)
+            odom_topic = rospy.get_param('~odom_topic', odom_topic)
+            use_bag_time_for_gt = rospy.get_param('~use_bag_time_for_gt', False)
+            use_bag_time_for_odom = rospy.get_param('~use_bag_time_for_odom', False)
         except Exception:
             pass
 
@@ -405,32 +430,50 @@ def main():
         parser.add_argument('--robot_bag', required=True, help='Path to robot bag file')
         parser.add_argument('--output_dir', default='./comparison_output',
                             help='Output directory for plots and CSV')
+        parser.add_argument('--gt_topic', default=gt_topic,
+                            help='GT pose/odom topic, or /phasespace/rigids for legacy rigid extraction')
+        parser.add_argument('--odom_topic', default=odom_topic,
+                            help='Robot odometry topic')
         parser.add_argument('--rigid_id', type=int, default=1,
                             help='Rigid body ID to track (default: 1)')
         parser.add_argument('--swap_yz', action='store_true',
                             help='Swap Y/Z axes for mocap data')
+        parser.add_argument('--use_bag_time_for_gt', action='store_true',
+                            help='Use mocap bag receive time instead of GT message header stamp')
+        parser.add_argument('--use_bag_time_for_odom', action='store_true',
+                            help='Use robot bag receive time instead of odom message header stamp')
         args = parser.parse_args()
         gt_bag = args.gt_bag
         robot_bag = args.robot_bag
         output_dir = args.output_dir
+        gt_topic = args.gt_topic
+        odom_topic = args.odom_topic
         rigid_id = args.rigid_id
         swap_yz = args.swap_yz
+        use_bag_time_for_gt = args.use_bag_time_for_gt
+        use_bag_time_for_odom = args.use_bag_time_for_odom
 
     if not output_dir:
         output_dir = './comparison_output'
 
-    os.makedirs(output_dir, exist_ok=False) if not os.path.exists(output_dir) else None
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
     print("\n=== Ground Truth vs Odometry Comparison ===")
     print("GT bag:    {}".format(gt_bag))
     print("Robot bag: {}".format(robot_bag))
     print("Output:    {}".format(output_dir))
+    print("GT topic:  {}".format(gt_topic))
+    print("Odom topic: {}".format(odom_topic))
     print("Rigid ID:  {}".format(rigid_id))
     print("")
 
     # --- Extract ---
-    gt_poses = extract_gt_poses(gt_bag, rigid_id=rigid_id, swap_yz=swap_yz)
-    odom_poses = extract_odom_poses(robot_bag)
+    if gt_topic == '/phasespace/rigids':
+        gt_poses = extract_gt_poses(gt_bag, rigid_id=rigid_id, topic=gt_topic, swap_yz=swap_yz)
+    else:
+        gt_poses = extract_pose_topic(gt_bag, gt_topic, 'GT', use_bag_time=use_bag_time_for_gt)
+    odom_poses = extract_odom_poses(robot_bag, topic=odom_topic, use_bag_time=use_bag_time_for_odom)
 
     if len(gt_poses) == 0:
         print("ERROR: No GT poses found for rigid body ID {}!".format(rigid_id))
@@ -464,6 +507,11 @@ def main():
     save_csv(aligned, output_dir)
 
     print("\nDone! All outputs in: {}".format(output_dir))
+    if HAS_ROS:
+        try:
+            rospy.signal_shutdown('preprocess complete')
+        except Exception:
+            pass
 
 
 if __name__ == '__main__':

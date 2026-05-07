@@ -1,0 +1,29 @@
+# Temporary marker-cluster ground truth for runs where the robot LEDs are
+# assigned PhaseSpace IDs 8..15.
+#
+# The current robot profile has also appeared as IDs 0..7; use
+# robot_01_marker_bootstrap.yaml for that newer assignment.
+robot_id: robot_01
+world_frame: mocap_world
+child_frame: robot_01/gt_base_link
+input_topic: /phasespace/markers
+
+marker_ids: [8, 9, 10, 11, 12, 13, 14, 15]
+bootstrap_from_first_frame: true
+bootstrap_min_markers: 8
+min_visible_markers: 4
+min_condition: 0.0
+reject_zero_positions: true
+subscriber_queue_size: 1
+publish_rate: 120.0
+
+reject_outliers: true
+max_marker_error: 0.15
+
+publish_tf: true
+publish_path: true
+path_downsample: 20
+max_path_length: 20000
+
+position_covariance: 0.01
+orientation_covariance: 0.05

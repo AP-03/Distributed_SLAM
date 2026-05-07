@@ -1,8 +1,0 @@
-<launch>
-  <param name="/use_sim_time" value="true"/>
-  <param name="robot_description" textfile="$(find robot_description)/urdf/assembly.urdf"/>
-
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen"/>
-
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find robot_description)/config/robot.rviz"/>
-</launch>

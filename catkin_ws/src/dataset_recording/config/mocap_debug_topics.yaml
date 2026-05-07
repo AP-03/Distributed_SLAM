@@ -1,0 +1,12 @@
+topics:
+  - /tf
+  - /tf_static
+  - /phasespace/rigids
+  - /phasespace/markers
+  - /phasespace/cameras
+  - /phasespace/errors
+  - /mocap_debug/led_markers
+  - /mocap_debug/led_paths
+  - /mocap_debug/rigid_markers
+  - /mocap_debug/rigid_paths
+  - /mocap_debug/status

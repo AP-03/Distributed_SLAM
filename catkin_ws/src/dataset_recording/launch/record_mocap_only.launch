@@ -1,0 +1,60 @@
+<launch>
+  <arg name="robot_id" default="robot_01"/>
+  <arg name="server_ip" default="192.168.1.25"/>
+  <arg name="frame_id" default="mocap_world"/>
+  <arg name="use_marker_bootstrap_gt" default="true"/>
+  <arg name="marker_ground_truth_config" default="$(find dataset_ground_truth)/config/robot_01_marker_bootstrap.yaml"/>
+  <arg name="rigid_ground_truth_config" default="$(find dataset_ground_truth)/config/robot_01.yaml"/>
+
+  <arg name="run_id" default="mocap_only_run"/>
+  <arg name="output_root" default="$(env HOME)/Distributed_SLAM/runs"/>
+  <arg name="operator" default="$(env USER)"/>
+  <arg name="notes" default="mocap-only capture; robot recorded locally"/>
+  <arg name="show_rviz" default="true"/>
+  <arg name="rviz_config" default="$(find dataset_ground_truth)/rviz/mocap_debug.rviz"/>
+
+  <include file="$(find phasespace_bringup)/launch/phasespace_mocap.launch">
+    <arg name="server_ip" value="$(arg server_ip)"/>
+    <arg name="frame_id" value="$(arg frame_id)"/>
+    <arg name="display" value="false"/>
+  </include>
+
+  <include if="$(arg use_marker_bootstrap_gt)" file="$(find dataset_ground_truth)/launch/marker_bootstrap_ground_truth.launch">
+    <arg name="robot_id" value="$(arg robot_id)"/>
+    <arg name="config" value="$(arg marker_ground_truth_config)"/>
+    <arg name="world_frame" value="$(arg frame_id)"/>
+  </include>
+
+  <include unless="$(arg use_marker_bootstrap_gt)" file="$(find dataset_ground_truth)/launch/one_robot_ground_truth.launch">
+    <arg name="robot_id" value="$(arg robot_id)"/>
+    <arg name="config" value="$(arg rigid_ground_truth_config)"/>
+  </include>
+
+  <node name="mocap_debug_visualizer"
+        pkg="dataset_ground_truth"
+        type="mocap_debug_visualizer.py"
+        output="screen">
+    <param name="fixed_frame" value="$(arg frame_id)"/>
+  </node>
+
+  <node if="$(arg show_rviz)"
+        name="mocap_recording_rviz"
+        pkg="rviz"
+        type="rviz"
+        args="-d $(arg rviz_config)"
+        output="screen"/>
+
+  <node name="record_mocap_only"
+        pkg="dataset_recording"
+        type="record_one_robot.py"
+        output="screen"
+        required="true">
+    <param name="robot_id" value="mocap"/>
+    <param name="scenario" value="mocap_only"/>
+    <param name="run_id" value="$(arg run_id)"/>
+    <param name="output_root" value="$(arg output_root)"/>
+    <param name="operator" value="$(arg operator)"/>
+    <param name="notes" value="$(arg notes)"/>
+    <rosparam command="load" file="$(find dataset_recording)/config/mocap_only_topics.yaml"/>
+  </node>
+</launch>

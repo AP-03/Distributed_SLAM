@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>dataset_recording</name>
+  <version>0.1.0</version>
+  <description>Run orchestration and rosbag recording utilities for dataset collection.</description>
+
+  <maintainer email="adrian.pailler@icloud.com">Adrian Pailler</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>dataset_ground_truth</exec_depend>
+  <exec_depend>phasespace_bringup</exec_depend>
+  <exec_depend>rosbag</exec_depend>
+  <exec_depend>rospy</exec_depend>
+
+  <export>
+  </export>
+</package>

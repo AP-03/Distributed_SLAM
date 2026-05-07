@@ -1,0 +1,17 @@
+<launch>
+  <arg name="urdf" default="$(find robot_description)/urdf/assembly.urdf"/>
+  <arg name="rviz_config" default="$(find robot_description)/config/calibration.rviz"/>
+
+  <param name="robot_description" textfile="$(arg urdf)"/>
+
+  <node name="robot_state_publisher"
+        pkg="robot_state_publisher"
+        type="robot_state_publisher"
+        output="screen"/>
+
+  <node name="rviz"
+        pkg="rviz"
+        type="rviz"
+        args="-d $(arg rviz_config)"
+        output="screen"/>
+</launch>

@@ -1,0 +1,23 @@
+# Canonical ground-truth configuration for the first robot.
+#
+# The transform is applied as:
+#   T_map_base = T_map_rigid * T_rigid_base
+#
+# Keep this identity until the rigid-body marker frame has been calibrated
+# against the robot base_link frame.
+robot_id: robot_01
+rigid_body_id: 1
+world_frame: map
+child_frame: robot_01/gt_base_link
+input_topic: /phasespace/rigids
+
+publish_tf: true
+publish_path: true
+path_downsample: 2
+max_path_length: 20000
+
+rigid_to_base_xyz: [0.0, 0.0, 0.0]
+rigid_to_base_rpy: [0.0, 0.0, 0.0]
+
+position_covariance: 0.0001
+orientation_covariance: 0.0001

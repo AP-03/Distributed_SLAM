@@ -1,0 +1,32 @@
+# Temporary marker-cluster ground truth for the first robot.
+#
+# This is for pilot testing only. It learns the 8-LED shape from the first
+# good frame, places the GT origin at the LED centroid, and then tracks that
+# cluster as a pseudo rigid body. Replace this with a measured rigid body and
+# base_link calibration before publication-quality data collection.
+robot_id: robot_01
+world_frame: mocap_world
+child_frame: robot_01/gt_base_link
+input_topic: /phasespace/markers
+
+marker_ids: [0, 1, 2, 3, 4, 5, 6, 7]
+bootstrap_from_first_frame: true
+bootstrap_min_markers: 8
+min_visible_markers: 4
+min_condition: 0.0
+reject_zero_positions: true
+subscriber_queue_size: 1
+publish_rate: 120.0
+
+reject_outliers: true
+max_marker_error: 0.15
+
+publish_tf: true
+publish_path: true
+path_downsample: 20
+max_path_length: 20000
+
+# Deliberately loose covariance because this is temporary cluster GT, not a
+# measured robot base_link calibration.
+position_covariance: 0.01
+orientation_covariance: 0.05

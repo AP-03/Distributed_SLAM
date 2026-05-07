@@ -1,104 +1,267 @@
 <?xml version="1.0"?>
 <robot name="myagv_assembly">
+  <!--
+    Robot description for the new full assembly STL.
+
+    Frame convention:
+      base_footprint: planar navigation frame on the floor projection.
+      base_link:      physical robot body frame used for sensors and mocap.
+      odom:           NOT defined here. It is a dynamic runtime/world frame.
+
+    The new assembly mesh is a visual reference only. Sensor and mocap
+    transforms below should be updated from physical measurements.
+
+    Current CAD measurements, from the Fusion/STL coordinate frame in mm:
+      base_link:   [-299.832,  24.717,   33.859]
+      camera_link: [-254.500, 142.000, -160.000]
+      laser_frame: [-320.430, 118.347,  -40.346]
+  -->
+
+  <material name="assembly_grey">
+    <color rgba="0.72 0.72 0.72 1.0"/>
+  </material>
+  <material name="camera_black">
+    <color rgba="0.02 0.02 0.02 1.0"/>
+  </material>
+  <material name="lidar_blue">
+    <color rgba="0.1 0.25 0.9 1.0"/>
+  </material>
+  <material name="mocap_led_green">
+    <color rgba="0.1 1.0 0.2 1.0"/>
+  </material>
+
+  <link name="base_footprint"/>
+
+  <joint name="base_footprint_to_base_link" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
   <link name="base_link"/>
 
-  <joint name="base_to_myagv" type="fixed">
+  <joint name="base_to_assembly_mesh" type="fixed">
     <parent link="base_link"/>
-    <child link="myagv_link"/>
-    <origin xyz="-0.033431 0.298771 -0.041892" rpy="1.578702 0.007906 1.570796"/>
+    <child link="assembly_mesh_link"/>
+    <!--
+      The STL was exported in the Fusion coordinate frame. This origin shifts
+      the measured CAD base_link point onto the URDF base_link frame.
+      Mesh units are millimeters, hence the 0.001 scale below.
+    -->
+    <origin xyz="0.299832 -0.024717 -0.033859" rpy="0 0 0"/>
   </joint>
-  <link name="myagv_link">
+  <link name="assembly_mesh_link">
     <visual>
       <geometry>
         <mesh filename="package://robot_description/meshes/stl/assembly.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <material name="light_grey">
-        <color rgba="0.75 0.75 0.75 1.0"/>
-      </material>
+      <material name="assembly_grey"/>
     </visual>
   </link>
 
-  <!-- Keep lidar_link and odom_link coincident with base_link -->
-  <joint name="base_to_lidar" type="fixed">
+  <!--
+    Lidar frame.
+    Translation is from the measured Fusion point relative to base_link:
+      [-320.430, 118.347, -40.346] - [-299.832, 24.717, 33.859] mm.
+    TODO: replace rpy with the measured sensor orientation if the lidar frame
+    axes are not aligned with base_link. The robot bag has used `laser_frame`.
+  -->
+  <joint name="base_to_laser_frame" type="fixed">
     <parent link="base_link"/>
+    <child link="laser_frame"/>
+    <origin xyz="-0.020598 0.093630 -0.074205" rpy="0 0 0"/>
+  </joint>
+  <link name="laser_frame">
+    <visual>
+      <origin xyz="0 0 0.025" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.035" length="0.05"/>
+      </geometry>
+      <material name="lidar_blue"/>
+    </visual>
+  </link>
+
+  <!-- Backwards-compatible alias for older configs that used lidar_link. -->
+  <joint name="laser_frame_to_lidar_link" type="fixed">
+    <parent link="laser_frame"/>
     <child link="lidar_link"/>
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
   <link name="lidar_link"/>
 
-  <joint name="base_to_odom" type="fixed">
+  <!--
+    Camera frames.
+    Translation is from the measured Fusion point relative to base_link:
+      [-254.500, 142.000, -160.000] - [-299.832, 24.717, 33.859] mm.
+    TODO: replace base_to_camera_link rpy with the measured camera body
+    orientation if the camera frame axes are not aligned with base_link. The
+    optical-frame rotations follow ROS camera convention.
+  -->
+  <joint name="base_to_camera_link" type="fixed">
     <parent link="base_link"/>
-    <child link="odom_link"/>
+    <child link="camera_link"/>
+    <origin xyz="0.045332 0.117283 -0.193859" rpy="0 0 0"/>
+  </joint>
+  <link name="camera_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.095 0.025 0.025"/>
+      </geometry>
+      <material name="camera_black"/>
+    </visual>
+  </link>
+
+  <joint name="camera_link_to_color_frame" type="fixed">
+    <parent link="camera_link"/>
+    <child link="camera_color_frame"/>
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
-  <link name="odom_link"/>
+  <link name="camera_color_frame"/>
 
-  <joint name="mount_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="mount_link"/>
-    <origin xyz="-0.126025 0.030099 0.117186" rpy="1.570796 -0.007906 -1.570796"/>
+  <joint name="camera_color_frame_to_optical" type="fixed">
+    <parent link="camera_color_frame"/>
+    <child link="camera_color_optical_frame"/>
+    <origin xyz="0 0 0" rpy="-1.57079632679 0 -1.57079632679"/>
   </joint>
-  <link name="mount_link"/>
+  <link name="camera_color_optical_frame"/>
 
-  <joint name="camera_joint" type="fixed">
-    <parent link="mount_link"/>
-    <child link="camera_link"/>
-    <origin xyz="0.030505 0.070500 0.006000" rpy="0 0 0"/>
-  </joint>
-  <link name="camera_link"/>
-
-  <joint name="camera_optical_joint" type="fixed">
+  <joint name="camera_link_to_depth_frame" type="fixed">
     <parent link="camera_link"/>
+    <child link="camera_depth_frame"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="camera_depth_frame"/>
+
+  <joint name="camera_depth_frame_to_optical" type="fixed">
+    <parent link="camera_depth_frame"/>
+    <child link="camera_depth_optical_frame"/>
+    <origin xyz="0 0 0" rpy="-1.57079632679 0 -1.57079632679"/>
+  </joint>
+  <link name="camera_depth_optical_frame"/>
+
+  <!-- Compatibility alias for older RViz configs. -->
+  <joint name="camera_color_optical_to_camera_optical_frame" type="fixed">
+    <parent link="camera_color_optical_frame"/>
     <child link="camera_optical_frame"/>
-    <origin xyz="0 0 0" rpy="-1.570796 0 -1.570796"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
   <link name="camera_optical_frame"/>
 
-  <joint name="base_to_led_marker" type="fixed">
-    <parent link="base_link"/>
-    <child link="led_marker_link"/>
-    <origin xyz="-0.015025 0.002880 0.117401" rpy="0 0 0"/>
-  </joint>
-  <link name="led_marker_link"/>
-
   <!--
-  Conversion notes (from Assembly_placements.json, units in mm unless noted):
-
-  Base frame (global from Fusion):
-    base_link_global = (-34.325, 10.103, 0.000)
-    base_link_rpy = (0, 0, 0)
-
-  Relative transform rule used for URDF joints:
-    p_rel = p_part_global - p_base_global
-    R_rel = R_base^T * R_part
-  Since base_link_rpy = (0,0,0), R_base is identity and:
-    p_rel = p_part_global - p_base_global
-
-  Example calculations (global -> relative):
-    myAGV v2 global = (-67.756, 308.874, -41.892)
-    p_rel = (-67.756, 308.874, -41.892) - (-34.325, 10.103, 0.000)
-          = (-33.431, 298.771, -41.892)  mm
-    rpy_rel = (1.578702, 0.007906, 1.570796)
-
-    DepthCamera_Mount v8 global = (-160.350, 40.202, 117.186)
-    p_rel = (-160.350, 40.202, 117.186) - (-34.325, 10.103, 0.000)
-          = (-126.025, 30.099, 117.186)   mm
-    rpy_rel = (1.570796, -0.007906, -1.570796)
-
-    Intel Realsense D455 v2 global = (-166.350, 10.256, 187.925)
-    p_rel = (-166.350, 10.256, 187.925) - (-34.325, 10.103, 0.000)
-          = (-132.025, 0.153, 187.925)  mm
-    rpy_rel = (1.570796, -0.007906, -1.570796)
-
-    LED marker global = (-49.35, 12.983, 117.401)
-    p_rel = (-49.35, 12.983, 117.401) - (-34.325, 10.103, 0.000)
-          = (-15.025, 2.880, 117.401)  mm
-    rpy_rel = (0, 0, 0)
-
-  Camera relative to mount (from JSON):
-    camera_rel_mount = (30.505, 70.500, 6.000) mm, rpy = (0,0,0)
-
-  All URDF xyz values are meters (mm / 1000).
+    Mocap LED frames.
+    TODO: replace each xyz with the measured LED center in base_link, meters.
+    Keep the marker IDs matched to PhaseSpace IDs. These placeholders are
+    intentionally near the top of the robot so the frames are visible in RViz.
   -->
+  <joint name="base_to_mocap_led_0" type="fixed">
+    <parent link="base_link"/>
+    <child link="mocap_led_0"/>
+    <origin xyz="-0.040 -0.060 0.160" rpy="0 0 0"/>
+  </joint>
+  <link name="mocap_led_0">
+    <visual>
+      <geometry>
+        <sphere radius="0.012"/>
+      </geometry>
+      <material name="mocap_led_green"/>
+    </visual>
+  </link>
+
+  <joint name="base_to_mocap_led_1" type="fixed">
+    <parent link="base_link"/>
+    <child link="mocap_led_1"/>
+    <origin xyz="0.040 -0.060 0.160" rpy="0 0 0"/>
+  </joint>
+  <link name="mocap_led_1">
+    <visual>
+      <geometry>
+        <sphere radius="0.012"/>
+      </geometry>
+      <material name="mocap_led_green"/>
+    </visual>
+  </link>
+
+  <joint name="base_to_mocap_led_2" type="fixed">
+    <parent link="base_link"/>
+    <child link="mocap_led_2"/>
+    <origin xyz="-0.040 0.000 0.160" rpy="0 0 0"/>
+  </joint>
+  <link name="mocap_led_2">
+    <visual>
+      <geometry>
+        <sphere radius="0.012"/>
+      </geometry>
+      <material name="mocap_led_green"/>
+    </visual>
+  </link>
+
+  <joint name="base_to_mocap_led_3" type="fixed">
+    <parent link="base_link"/>
+    <child link="mocap_led_3"/>
+    <origin xyz="0.040 0.000 0.160" rpy="0 0 0"/>
+  </joint>
+  <link name="mocap_led_3">
+    <visual>
+      <geometry>
+        <sphere radius="0.012"/>
+      </geometry>
+      <material name="mocap_led_green"/>
+    </visual>
+  </link>
+
+  <joint name="base_to_mocap_led_4" type="fixed">
+    <parent link="base_link"/>
+    <child link="mocap_led_4"/>
+    <origin xyz="-0.040 0.060 0.160" rpy="0 0 0"/>
+  </joint>
+  <link name="mocap_led_4">
+    <visual>
+      <geometry>
+        <sphere radius="0.012"/>
+      </geometry>
+      <material name="mocap_led_green"/>
+    </visual>
+  </link>
+
+  <joint name="base_to_mocap_led_5" type="fixed">
+    <parent link="base_link"/>
+    <child link="mocap_led_5"/>
+    <origin xyz="0.040 0.060 0.160" rpy="0 0 0"/>
+  </joint>
+  <link name="mocap_led_5">
+    <visual>
+      <geometry>
+        <sphere radius="0.012"/>
+      </geometry>
+      <material name="mocap_led_green"/>
+    </visual>
+  </link>
+
+  <joint name="base_to_mocap_led_6" type="fixed">
+    <parent link="base_link"/>
+    <child link="mocap_led_6"/>
+    <origin xyz="-0.080 0.000 0.190" rpy="0 0 0"/>
+  </joint>
+  <link name="mocap_led_6">
+    <visual>
+      <geometry>
+        <sphere radius="0.012"/>
+      </geometry>
+      <material name="mocap_led_green"/>
+    </visual>
+  </link>
+
+  <joint name="base_to_mocap_led_7" type="fixed">
+    <parent link="base_link"/>
+    <child link="mocap_led_7"/>
+    <origin xyz="0.080 0.000 0.190" rpy="0 0 0"/>
+  </joint>
+  <link name="mocap_led_7">
+    <visual>
+      <geometry>
+        <sphere radius="0.012"/>
+      </geometry>
+      <material name="mocap_led_green"/>
+    </visual>
+  </link>
 </robot>

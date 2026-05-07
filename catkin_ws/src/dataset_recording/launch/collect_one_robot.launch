@@ -1,0 +1,32 @@
+<launch>
+  <arg name="robot_id" default="robot_01"/>
+  <arg name="scenario" default="debug"/>
+  <arg name="run_id" default="$(env USER)_debug_run"/>
+  <arg name="output_root" default="$(env HOME)/Distributed_SLAM/runs"/>
+  <arg name="operator" default="$(env USER)"/>
+  <arg name="notes" default=""/>
+
+  <arg name="server_ip" default="192.168.1.230"/>
+  <arg name="mocap_frame" default="mocap_world"/>
+  <arg name="ground_truth_config" default="$(find dataset_ground_truth)/config/robot_01.yaml"/>
+
+  <include file="$(find phasespace_bringup)/launch/phasespace_mocap.launch">
+    <arg name="server_ip" value="$(arg server_ip)"/>
+    <arg name="frame_id" value="$(arg mocap_frame)"/>
+    <arg name="display" value="false"/>
+  </include>
+
+  <include file="$(find dataset_ground_truth)/launch/one_robot_ground_truth.launch">
+    <arg name="robot_id" value="$(arg robot_id)"/>
+    <arg name="config" value="$(arg ground_truth_config)"/>
+  </include>
+
+  <include file="$(find dataset_recording)/launch/record_one_robot.launch">
+    <arg name="robot_id" value="$(arg robot_id)"/>
+    <arg name="scenario" value="$(arg scenario)"/>
+    <arg name="run_id" value="$(arg run_id)"/>
+    <arg name="output_root" value="$(arg output_root)"/>
+    <arg name="operator" value="$(arg operator)"/>
+    <arg name="notes" value="$(arg notes)"/>
+  </include>
+</launch>

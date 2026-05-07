@@ -1,0 +1,11 @@
+topics:
+  - /tf
+  - /tf_static
+  - /phasespace/rigids
+  - /phasespace/markers
+  - /phasespace/cameras
+  - /phasespace/errors
+  - /gt/robot_01/pose
+  - /gt/robot_01/odom
+  - /gt/robot_01/status
+  - /mocap_debug/status

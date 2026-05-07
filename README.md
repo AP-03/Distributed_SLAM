@@ -145,6 +145,7 @@ python scripts/process_bagfile.py path/to/bagfile.bag
 ## Documentation
 
 - **Setup & Installation**: See [setup.md](setup.md)
+- **Experiment Workflow**: See [docs/experiment_workflow.md](docs/experiment_workflow.md)
 - **Robot Calibration**: See `robot_description/config/`
 - **Experiment Parameters**: See `robot_experiment/config/experiment_params.yaml`
 

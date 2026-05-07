@@ -1,1 +1,32 @@
+### Dataset / experiment outputs
+runs/
+/20??????_*/
 *.bag
+*.bag.active
+*.db3
+*.mcap
+
+### ROS / catkin generated files
+catkin_ws/build/
+catkin_ws/devel/
+catkin_ws/install/
+catkin_ws/logs/
+catkin_ws/.catkin_tools/
+
+### Python generated files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+### Editor / OS sidecars
+.vscode/
+.idea/
+*.swp
+*~
+*.Zone.Identifier
+Zone.Identifier
+
+### Generated TF frame graph artifacts
+catkin_ws/frames.pdf
+catkin_ws/frames.gv
