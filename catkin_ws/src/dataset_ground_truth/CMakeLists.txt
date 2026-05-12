@@ -19,6 +19,9 @@ catkin_install_python(PROGRAMS
   scripts/marker_bootstrap_ground_truth_node.py
   scripts/mocap_debug_summary.py
   scripts/mocap_debug_visualizer.py
+  scripts/multi_marker_ground_truth_node.py
+  scripts/multi_rigid_ground_truth_node.py
+  scripts/phasespace_retimestamp_node.py
   scripts/phasespace_ground_truth_node.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

@@ -1,5 +1,6 @@
 <launch>
   <arg name="robot_id" default="robot_01"/>
+  <arg name="topic_robot_id" default="$(arg robot_id)"/>
   <arg name="scenario" default="debug"/>
   <arg name="run_id" default="$(env USER)_debug_run"/>
   <arg name="output_root" default="$(env HOME)/Distributed_SLAM/runs"/>
@@ -14,6 +15,7 @@
         output="screen"
         required="true">
     <param name="robot_id" value="$(arg robot_id)"/>
+    <param name="topic_robot_id" value="$(arg topic_robot_id)"/>
     <param name="scenario" value="$(arg scenario)"/>
     <param name="run_id" value="$(arg run_id)"/>
     <param name="output_root" value="$(arg output_root)"/>

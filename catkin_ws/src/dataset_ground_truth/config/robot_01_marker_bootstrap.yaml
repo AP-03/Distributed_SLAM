@@ -7,7 +7,7 @@
 robot_id: robot_01
 world_frame: mocap_world
 child_frame: robot_01/gt_base_link
-input_topic: /phasespace/markers
+input_topic: /phasespace/stamped/markers
 
 marker_ids: [0, 1, 2, 3, 4, 5, 6, 7]
 bootstrap_from_first_frame: true

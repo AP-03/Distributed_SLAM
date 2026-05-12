@@ -12,11 +12,20 @@
 
   <param name="/use_sim_time" value="true"/>
 
+  <node name="phasespace_retimestamp"
+        pkg="dataset_ground_truth"
+        type="phasespace_retimestamp_node.py"
+        output="screen">
+    <param name="frame_id" value="$(arg frame_id)"/>
+  </node>
+
   <node name="mocap_debug_visualizer"
         pkg="dataset_ground_truth"
         type="mocap_debug_visualizer.py"
         output="screen">
     <param name="fixed_frame" value="$(arg frame_id)"/>
+    <param name="markers_topic" value="/phasespace/stamped/markers"/>
+    <param name="rigids_topic" value="/phasespace/stamped/rigids"/>
   </node>
 
   <include if="$(arg use_marker_bootstrap_gt)" file="$(find dataset_ground_truth)/launch/marker_bootstrap_ground_truth.launch">

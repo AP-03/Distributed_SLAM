@@ -1,0 +1,13 @@
+<launch>
+  <arg name="config" default="$(find dataset_ground_truth)/config/multi_robot_markers.yaml"/>
+  <arg name="world_frame" default="mocap_world"/>
+
+  <rosparam command="load" file="$(arg config)"/>
+
+  <node name="multi_marker_ground_truth"
+        pkg="dataset_ground_truth"
+        type="multi_marker_ground_truth_node.py"
+        output="screen">
+    <param name="world_frame" value="$(arg world_frame)"/>
+  </node>
+</launch>

@@ -1,7 +1,8 @@
 # dataset_ground_truth
 
-This package converts raw PhaseSpace rigid-body messages into canonical
-ground-truth topics for dataset collection.
+This package converts stamped PhaseSpace rigid-body messages into canonical
+ground-truth topics for dataset collection. Raw `/phasespace/*` topics are kept
+in the bag for audit; `/phasespace/stamped/*` topics are used by the GT nodes.
 
 For one robot, it publishes:
 
@@ -20,10 +21,20 @@ T_map_base = T_map_rigid * T_rigid_base
 For publication-quality runs, replace the identity transform in
 `config/robot_01.yaml` with a measured rigid-body-to-robot-base transform.
 
+For multiple robots, define one rigid body per robot in the PhaseSpace
+software, list those IDs in `config/multi_robot_rigids.yaml`, then run:
+
+```bash
+roslaunch dataset_ground_truth multi_rigid_ground_truth.launch
+```
+
+Each configured robot publishes `/gt/<robot_id>/{pose,odom,path,status}` and
+optional TF to `<robot_id>/gt_base_link`.
+
 ## Temporary 8-LED Cluster GT
 
 For the current pilot robot, PhaseSpace is publishing loose LEDs but not a
-server-defined rigid body. Use the temporary bootstrap node to treat LEDs
+server-defined rigid body. If needed, use the temporary bootstrap node to treat LEDs
 `8..15` as one cluster:
 
 ```bash

@@ -4,8 +4,11 @@ topics:
   - /phasespace/rigids
   - /phasespace/markers
   - /phasespace/cameras
+  - /phasespace/stamped/rigids
+  - /phasespace/stamped/markers
+  - /phasespace/stamped/cameras
   - /phasespace/errors
-  - /gt/robot_01/pose
-  - /gt/robot_01/odom
-  - /gt/robot_01/status
+  - /gt/{robot_id}/pose
+  - /gt/{robot_id}/odom
+  - /gt/{robot_id}/status
   - /mocap_debug/status

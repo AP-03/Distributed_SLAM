@@ -1,0 +1,54 @@
+# Multi-robot PhaseSpace rigid-body ground truth.
+#
+# In PhaseSpace, define one rigid body per robot using that robot's 8 stable LEDs.
+# Put the resulting PhaseSpace rigid body ID here. Until calibration is measured,
+# keep rigid_to_base as identity: /gt/<robot>/pose will then be the PhaseSpace
+# rigid-body origin, not the robot base_link. For publication/evaluation, fill in
+# T_rigid_base from a measured calibration and keep the raw mocap bag unchanged.
+
+world_frame: mocap_world
+input_topic: /phasespace/stamped/rigids
+subscriber_queue_size: 1
+
+defaults:
+  min_condition: 0.0
+  reject_zero_pose: true
+  publish_tf: true
+  publish_path: true
+  path_downsample: 10
+  max_path_length: 20000
+  position_covariance: 0.0001
+  orientation_covariance: 0.0001
+  rigid_to_base_xyz: [0.0, 0.0, 0.0]
+  rigid_to_base_rpy: [0.0, 0.0, 0.0]
+
+robots:
+  - robot_id: robot_01
+    rigid_body_id: 1
+    child_frame: robot_01/gt_base_link
+    rigid_to_base_xyz: [0.0, 0.0, 0.0]
+    rigid_to_base_rpy: [0.0, 0.0, 0.0]
+
+  - robot_id: robot_02
+    rigid_body_id: 2
+    child_frame: robot_02/gt_base_link
+    rigid_to_base_xyz: [0.0, 0.0, 0.0]
+    rigid_to_base_rpy: [0.0, 0.0, 0.0]
+
+  - robot_id: robot_03
+    rigid_body_id: 3
+    child_frame: robot_03/gt_base_link
+    rigid_to_base_xyz: [0.0, 0.0, 0.0]
+    rigid_to_base_rpy: [0.0, 0.0, 0.0]
+
+  - robot_id: robot_04
+    rigid_body_id: 4
+    child_frame: robot_04/gt_base_link
+    rigid_to_base_xyz: [0.0, 0.0, 0.0]
+    rigid_to_base_rpy: [0.0, 0.0, 0.0]
+
+  - robot_id: robot_05
+    rigid_body_id: 5
+    child_frame: robot_05/gt_base_link
+    rigid_to_base_xyz: [0.0, 0.0, 0.0]
+    rigid_to_base_rpy: [0.0, 0.0, 0.0]

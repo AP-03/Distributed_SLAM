@@ -1,0 +1,41 @@
+# Multi-robot marker-cluster ground truth.
+#
+# Safe pilot mode:
+#   Leave marker_positions empty and bootstrap_from_first_frame true. The node
+#   publishes a temporary pose whose origin is each robot's LED centroid.
+#
+# Publication mode:
+#   Measure every LED center in the robot base_link frame, fill marker_positions
+#   for each robot, and set bootstrap_from_first_frame false. Then the published
+#   /gt/<robot_id>/pose is the measured base_link pose in mocap_world.
+
+world_frame: mocap_world
+input_topic: /phasespace/stamped/markers
+subscriber_queue_size: 1
+
+defaults:
+  bootstrap_from_first_frame: true
+  bootstrap_min_markers: 8
+  min_visible_markers: 4
+  min_condition: 0.0
+  reject_zero_positions: true
+  reject_outliers: true
+  max_marker_error: 0.15
+  publish_rate: 120.0
+  publish_tf: true
+  publish_path: true
+  path_downsample: 20
+  max_path_length: 20000
+  position_covariance: 0.01
+  orientation_covariance: 0.05
+
+robots:
+  - robot_id: robot_01
+    child_frame: robot_01/gt_base_link
+    marker_ids: [0, 1, 2, 3, 4, 5, 6, 7]
+    marker_positions: {}
+
+  - robot_id: robot_02
+    child_frame: robot_02/gt_base_link
+    marker_ids: [8, 9, 10, 11, 12, 13, 14, 15]
+    marker_positions: {}

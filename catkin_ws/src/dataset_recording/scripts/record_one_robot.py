@@ -51,6 +51,13 @@ def _normalise_topics(topics):
     return [str(topic) for topic in topics if str(topic).strip()]
 
 
+def _expand_topics(topics, robot_id):
+    expanded = []
+    for topic in topics:
+        expanded.append(topic.replace("{robot_id}", robot_id))
+    return expanded
+
+
 def _write_metadata(path, metadata):
     if yaml is not None:
         with open(path, "w") as handle:
@@ -67,6 +74,7 @@ class OneRobotRecorder(object):
         rospy.init_node("dataset_record_one_robot")
 
         self.robot_id = _param("robot_id", "robot_01")
+        self.topic_robot_id = _param("topic_robot_id", self.robot_id)
         self.scenario = _param("scenario", "debug")
         default_run_id = "%s_%s_%s" % (time.strftime("%Y%m%d_%H%M%S"), self.scenario, self.robot_id)
         self.run_id = _param("run_id", default_run_id)
@@ -75,7 +83,8 @@ class OneRobotRecorder(object):
         self.notes = _param("notes", "")
         self.split = _as_bool(_param("split", False))
         self.split_size_mb = int(_param("split_size_mb", 4096))
-        self.topics = _normalise_topics(_param("topics", []))
+        self.regex = _as_bool(_param("regex", False))
+        self.topics = _expand_topics(_normalise_topics(_param("topics", [])), self.topic_robot_id)
 
         if not self.topics:
             raise RuntimeError("No topics configured for recording")
@@ -95,6 +104,7 @@ class OneRobotRecorder(object):
         metadata = {
             "run_id": self.run_id,
             "robot_id": self.robot_id,
+            "topic_robot_id": self.topic_robot_id,
             "scenario": self.scenario,
             "operator": self.operator,
             "notes": self.notes,
@@ -102,6 +112,7 @@ class OneRobotRecorder(object):
             "created_local_time": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
             "ros_master_uri": os.environ.get("ROS_MASTER_URI", ""),
             "topics": self.topics,
+            "topic_regex": self.regex,
             "raw_bag": os.path.relpath(self.bag_path, self.run_dir),
         }
         _write_metadata(os.path.join(self.run_dir, "metadata.yaml"), metadata)
@@ -117,12 +128,16 @@ class OneRobotRecorder(object):
         command = ["rosbag", "record", "-O", self.bag_path]
         if self.split:
             command.extend(["--split", "--size=%d" % self.split_size_mb])
+        if self.regex:
+            command.append("-e")
         command.extend(self.topics)
 
         rospy.loginfo("Recording run_id=%s robot_id=%s scenario=%s", self.run_id, self.robot_id, self.scenario)
         rospy.loginfo("Run directory: %s", self.run_dir)
         rospy.loginfo("Bag path: %s", self.bag_path)
         rospy.loginfo("Recording %d topics", len(self.topics))
+        if self.regex:
+            rospy.loginfo("Recording topics as regex patterns")
         self.process = subprocess.Popen(command, preexec_fn=os.setsid)
 
     def stop(self):

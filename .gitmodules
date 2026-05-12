@@ -1,19 +1,19 @@
-[submodule "Distributed-SLAM-AGV-Code"]
-	path = Distributed-SLAM-AGV-Code
+[submodule "external/robot_runtime"]
+	path = external/robot_runtime
 	url = https://github.com/osayed11/Distributed-SLAM-AGV-Code.git
 
-[submodule "agv_on-board"]
-	path = agv_on-board
+[submodule "external/agv_on_board"]
+	path = external/agv_on_board
 	url = https://github.com/Gani332/agv_on-board.git
 
-[submodule "myAGV-SLAM-Pipeline"]
-	path = myAGV-SLAM-Pipeline
+[submodule "external/offline_slam_pipeline"]
+	path = external/offline_slam_pipeline
 	url = https://github.com/osayed11/myAGV-SLAM-Pipeline.git
 
-[submodule "phasespace-mocap-ros"]
-	path = phasespace-mocap-ros
+[submodule "external/phasespace_mocap_ros"]
+	path = external/phasespace_mocap_ros
 	url = https://github.com/FocasLab/phasespace-mocap-ros.git
 
-[submodule "catkin_ws/src/YDLidar-SDK"]
-	path = catkin_ws/src/YDLidar-SDK
+[submodule "external/ydlidar_sdk"]
+	path = external/ydlidar_sdk
 	url = https://github.com/YDLIDAR/YDLidar-SDK.git

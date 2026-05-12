@@ -12,9 +12,15 @@
 
   <include file="$(find phasespace_bringup)/launch/phasespace_mocap.launch">
     <arg name="server_ip" value="$(arg server_ip)"/>
-    <arg name="frame_id" value="$(arg mocap_frame)"/>
     <arg name="display" value="false"/>
   </include>
+
+  <node name="phasespace_retimestamp"
+        pkg="dataset_ground_truth"
+        type="phasespace_retimestamp_node.py"
+        output="screen">
+    <param name="frame_id" value="$(arg mocap_frame)"/>
+  </node>
 
   <include file="$(find dataset_ground_truth)/launch/one_robot_ground_truth.launch">
     <arg name="robot_id" value="$(arg robot_id)"/>

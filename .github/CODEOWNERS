@@ -1,0 +1,18 @@
+# Default reviewers for everything.
+* @AP-03
+
+# Dataset and mocap stack.
+/catkin_ws/src/dataset_ground_truth/ @AP-03
+/catkin_ws/src/dataset_recording/ @AP-03
+/catkin_ws/src/dataset_validation/ @AP-03
+/docs/ @AP-03
+
+# Robot model and calibration.
+/catkin_ws/src/robot_description/ @AP-03
+
+# Submodule pointer updates need explicit review.
+/external/robot_runtime @AP-03
+/external/agv_on_board @AP-03
+/external/offline_slam_pipeline @AP-03
+/external/phasespace_mocap_ros @AP-03
+/external/ydlidar_sdk @AP-03

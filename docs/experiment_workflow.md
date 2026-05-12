@@ -7,9 +7,9 @@ validated.
 
 ## Package Roles
 
-- `phasespace-mocap-ros`: raw PhaseSpace bridge. Publishes `/phasespace/*`.
-- `dataset_ground_truth`: converts raw PhaseSpace rigids, or the temporary
-  8-LED bootstrap cluster, into canonical ground-truth topics under
+- `external/phasespace_mocap_ros`: raw PhaseSpace bridge. Publishes `/phasespace/*`.
+- `dataset_ground_truth`: converts PhaseSpace rigid bodies, or the temporary
+  8-LED marker bootstrap fallback, into canonical ground-truth topics under
   `/gt/<robot_id>/*`.
 - `dataset_recording`: creates run directories, captures NTP diagnostics, and
   runs `rosbag record`.
@@ -81,6 +81,8 @@ For the one-robot pilot, the expected topics are:
 
 ```text
 /phasespace/rigids
+/phasespace/stamped/rigids
+/phasespace/stamped/markers
 /gt/robot_01/pose
 /gt/robot_01/odom
 /gt/robot_01/path
@@ -117,12 +119,55 @@ uses the LED centroid as the GT origin. This is acceptable for checking that
 mocap, odom, lidar, camera recording, and offline SLAM evaluation all connect,
 but it should not be used as final dataset ground truth.
 
+## Multi-Robot Mocap Collection
+
+Preferred setup: define one rigid body per robot inside the PhaseSpace software
+using that robot's 8 stable LEDs. Then list those PhaseSpace rigid-body IDs in
+`dataset_ground_truth/config/multi_robot_rigids.yaml`.
+
+The lab station records one mocap bag for all robots:
+
+```bash
+roslaunch dataset_recording record_mocap_multi_robot.launch \
+  run_id:=20260429_lab_multirobot_r01_run01 \
+  server_ip:=192.168.1.25 \
+  show_rviz:=true
+```
+
+This launch records raw `/phasespace/*`, stamped `/phasespace/stamped/*`,
+`/gt/<robot_id>/*`, `/tf`, `/tf_static`, and the live debug visualization
+topics. Each robot should still record its own local sensor bag during the same
+run. Offline dataset assembly should align the mocap bag and robot bags by ROS
+timestamps after clock sync.
+
+If `rigid_to_base_xyz/rpy` is still identity, the GT pose is the PhaseSpace
+rigid-body origin. That is okay for collection as long as raw mocap is saved;
+after measurement, replay the raw mocap bag with the calibrated
+`multi_robot_rigids.yaml` to regenerate calibrated `/gt/<robot_id>/*` topics.
+
+## PhaseSpace Driver Boundary
+
+`external/phasespace_mocap_ros` is kept as an upstream submodule. Dataset-critical
+timestamping and frame naming live in `dataset_ground_truth` instead:
+
+```text
+/phasespace/markers          raw upstream driver output
+/phasespace/stamped/markers  dataset-safe stamped output
+/phasespace/rigids           raw upstream driver output
+/phasespace/stamped/rigids   dataset-safe stamped output
+```
+
+Use the stamped topics for ground truth, RViz validation, and dataset pass/fail
+checks. Recording configs keep the raw topics for audit, but validation should
+require the stamped topics. This prevents a future submodule reset from wiping
+our dataset timestamp/frame behavior.
+
 ## Acceptance Criteria For This Week
 
 A one-robot pilot run is accepted when:
 
-- PhaseSpace publishes stamped `/phasespace/markers`; `/phasespace/rigids` is
-  preferred once the rigid body is configured in PhaseSpace.
+- PhaseSpace raw data is bridged to stamped `/phasespace/stamped/markers`;
+  `/phasespace/stamped/rigids` is preferred once the rigid body is configured.
 - `/gt/robot_01/pose` follows the robot in RViz.
 - The robot bag contains `/robot_01/odom`, `/robot_01/scan`, `/tf`, and
   `/tf_static`.

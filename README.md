@@ -1,158 +1,99 @@
-# Distributed Multi-Robot SLAM Stack
+# Distributed SLAM Dataset Stack
 
-This repository contains the **ROS 1 Melodic workspace** for a distributed SLAM dataset project. We collect synchronized multi-robot datasets from ~50 Raspberry Pi-based robots equipped with LiDAR, RGB-D, IMU, and wheel odometry sensors.
+This repository is the integration repo for the distributed SLAM dataset
+project. It owns the mocap ground-truth, dataset recording, validation,
+calibration, and experiment documentation needed to collect publishable
+multi-robot SLAM data.
 
-## Project Goals
+The robot runtime and offline SLAM implementations are kept as submodules so
+they can evolve in their own repositories while this repo pins the exact
+versions used for each dataset release.
 
-- **Collect synchronized multi-robot datasets** in diverse scenarios (loops, squares, corridors, etc.)
-- **Provide a reproducible simulation stack** (Gazebo + RViz) for algorithm development
-- **Enable benchmarking** of different distributed SLAM algorithms on the same standardized data
+## What Lives Where
 
----
-
-## System Specifications
-
-| Component | Details |
-|-----------|---------|
-| **ROS Version** | ROS 1 Melodic |
-| **Target OS** | Ubuntu 18.04 |
-| **Hardware** | Raspberry Pi + ROS-compatible sensors |
-| **Sensors per Robot** | LiDAR, RGB-D camera, IMU, wheel odometry |
-| **Fleet Size** | ~50 robots |
-
----
-
-## Workspace Organization
-
-All code is organized as a catkin workspace under `catkin_ws/src/`:
-
-```
+```text
 catkin_ws/src/
-├── robot_description/      # URDF/Xacro definitions & sensor frames
-├── robot_bringup/          # Single-robot launch files & driver configs
-├── robot_sim/              # Gazebo worlds & multi-robot sim launch files
-├── robot_viz/              # RViz visualizations for monitoring
-├── robot_dataset_tools/    # Dataset processing & validation utilities
-├── robot_experiment/       # Experiment scenarios & metadata publishing
-└── robot_firmware/         # Robot provisioning & flashing tools (optional)
+  dataset_ground_truth/   PhaseSpace -> /gt/<robot_id> pose/odom/path
+  dataset_recording/      run folders, rosbag capture, NTP/Chrony snapshots
+  dataset_validation/     bag/topic/timestamp checks for completed runs
+  robot_description/      URDF, meshes, RViz calibration views, sensor frames
+  slam_comparison/        local comparison/plotting helpers
+
+external/
+  robot_runtime/            robot-side runtime submodule
+  agv_on_board/             alternate/partner robot-side repo submodule
+  offline_slam_pipeline/    offline SLAM/evaluation submodule
+  phasespace_mocap_ros/     upstream PhaseSpace ROS bridge submodule
+  ydlidar_sdk/              YDLidar SDK submodule
+
+catkin_ws/src/phasespace_* and catkin_ws/src/YDLidar-SDK are symlinks into
+external/ so ROS tools can still find the packages/SDK where they expect them.
+
+docs/                       workflow, calibration, and repo policy docs
+runs/                       local experiment outputs; never committed
 ```
 
----
+## Main Workflows
 
-## Package Descriptions
+Mocap-only collection on the lab station:
 
-### `robot_description`
-Contains the robot's kinematic model and sensor frame definitions.
-
-- **URDF/Xacro files** defining the robot structure and sensor attachments
-- **Sensor frames**: `base_link`, `lidar_link`, `camera_link`, `imu_link`, etc.
-- **Calibration & config files** for LiDAR, RGB-D, and IMU sensor parameters
-
-### `robot_bringup`
-Handles the bring-up of a single robot—launching drivers and configuring sensor streaming.
-
-- **Per-robot launch files** that start drivers, TF broadcasting, and sensor nodes
-- **Recording launch files** (e.g., `robot_record.launch`) for bag file collection
-- **Sensor parameter YAMLs** specifying frame rates, resolutions, and other settings
-
-### `robot_sim`
-Simulation environment for development and algorithm testing.
-
-- **Gazebo worlds** for standard scenarios: loops, squares, corridors, etc.
-- **Robot models with Gazebo plugins** that mimic real sensor behavior
-- **Multi-robot spawn & sim launch files** for testing distributed algorithms
-
-### `robot_viz`
-Visualization and monitoring for operators and researchers.
-
-- **RViz configuration files** for single-robot and multi-robot visualization
-- **Convenience launch files** to start RViz with pre-configured settings
-- **Dashboard-style views** for monitoring fleet state during data collection
-
-### `robot_dataset_tools`
-Post-processing tools to turn raw rosbag data into a structured dataset.
-
-- **Validation scripts** for rosbag integrity checks
-- **Data extraction & alignment utilities** (timestamp synchronization, etc.)
-- **Dataset metadata generation** for reproducible research
-- **Custom ROS messages** (e.g., `ExperimentMetadata.msg`)
-
-### `robot_experiment`
-Configuration and orchestration of experiments across the fleet.
-
-- **Scenario configurations** (loop, square, corridor, etc.)
-- **Experiment metadata node** that broadcasts scenario ID, run ID, robot ID, and conditions
-- **Multi-robot launch files** for coordinated experiment execution
-
-### `robot_firmware`
-(Optional) Helper tools for fleet provisioning.
-
-- **SD card flashing utilities**
-- **Config deployment scripts** for batch updates across robots
-
----
-
-## Quick Start
-
-**For detailed setup instructions, see [setup.md](setup.md).**
-
-### On Each Robot
 ```bash
-# Clone the workspace
-git clone https://github.com/AP-03/Distributed_SLAM.git
-cd Distributed_SLAM/catkin_ws
-
-# Build
-catkin_make
-
-# Source the setup
+cd ~/Distributed_SLAM/catkin_ws
 source devel/setup.bash
+roslaunch dataset_recording record_mocap_multi_robot.launch \
+  run_id:=YYYYMMDD_site_scenario_rXX_runNN \
+  server_ip:=192.168.1.25 \
+  show_rviz:=true
 ```
 
-### Verify Installation
+One-robot pilot validation:
+
 ```bash
-rospack find robot_bringup
-rospack find robot_sim
-rospack find robot_dataset_tools
+rosrun dataset_validation validate_run.py \
+  --robot_id robot_01 \
+  --run_dir ~/Distributed_SLAM/runs/YYYYMMDD_site_scenario_rXX_runNN
 ```
 
----
+Robot-side collection is handled in the robot runtime submodule. The normal
+pattern is:
 
-## Usage Examples
+1. Start mocap recording on the lab station.
+2. Start robot-local recording on each robot.
+3. Drive the planned scenario.
+4. Stop recordings and copy robot bags into the matching `runs/<run_id>/`.
+5. Validate, align, and process offline.
 
-### Bring Up a Single Robot
+## Submodule Policy
+
+Submodules are treated as pinned dependencies. Do not edit submodule code from
+the parent repo unless you intend to make a commit in that submodule too.
+
+Use this when cloning:
+
 ```bash
-roslaunch robot_bringup robot_bringup.launch robot_id:=robot_01
+git clone --recurse-submodules https://github.com/AP-03/Distributed_SLAM.git
 ```
 
-### Start the Simulator
+Use this when updating pinned submodule versions:
+
 ```bash
-roslaunch robot_sim multi_robot_sim.launch num_robots:=5
+git submodule update --init --recursive
+git -C external/robot_runtime status
+git -C external/offline_slam_pipeline status
 ```
 
-### Record a Dataset
-```bash
-roslaunch robot_bringup robot_record.launch robot_id:=robot_01
-```
-
-### Process a Rosbag
-```bash
-python scripts/process_bagfile.py path/to/bagfile.bag
-```
-
----
+If a submodule has conflicts or local edits, resolve and commit those inside the
+submodule first, then commit the updated submodule pointer in this parent repo.
 
 ## Documentation
 
-- **Setup & Installation**: See [setup.md](setup.md)
-- **Experiment Workflow**: See [docs/experiment_workflow.md](docs/experiment_workflow.md)
-- **Robot Calibration**: See `robot_description/config/`
-- **Experiment Parameters**: See `robot_experiment/config/experiment_params.yaml`
+- [Experiment workflow](docs/experiment_workflow.md)
+- [Repository organization](docs/repo_organization.md)
+- [Cleanup status](docs/cleanup_status.md)
+- [Contribution and PR rules](CONTRIBUTING.md)
 
----
+## Data Policy
 
-## Contributors
-
-This stack is maintained by the [Multi-Robot SLAM](https://github.com/AP-03) project at UCL (2025–2026).
-
-For questions or issues, please open an issue on GitHub or contact the project maintainers.
+Raw datasets, bags, generated plots, build folders, and local logs stay out of
+git. The repo should contain code, configuration, calibration files,
+documentation, and small validation reports only.

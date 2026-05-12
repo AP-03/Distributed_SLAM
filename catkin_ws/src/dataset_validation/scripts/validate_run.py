@@ -14,7 +14,7 @@ def _required_topics(robot_id, profile):
         "one_robot_rigid": [
             "/tf",
             "/tf_static",
-            "/phasespace/rigids",
+            "/phasespace/stamped/rigids",
             "/gt/%s/pose" % robot_id,
             "/gt/%s/odom" % robot_id,
             "/%s/odom" % robot_id,
@@ -22,7 +22,7 @@ def _required_topics(robot_id, profile):
         "one_robot_marker_bootstrap": [
             "/tf",
             "/tf_static",
-            "/phasespace/markers",
+            "/phasespace/stamped/markers",
             "/gt/%s/pose" % robot_id,
             "/gt/%s/odom" % robot_id,
             "/%s/odom" % robot_id,
@@ -30,14 +30,14 @@ def _required_topics(robot_id, profile):
         "mocap_only_marker_bootstrap": [
             "/tf",
             "/tf_static",
-            "/phasespace/markers",
+            "/phasespace/stamped/markers",
             "/gt/%s/pose" % robot_id,
             "/gt/%s/odom" % robot_id,
         ],
         "mocap_only_rigid": [
             "/tf",
             "/tf_static",
-            "/phasespace/rigids",
+            "/phasespace/stamped/rigids",
             "/gt/%s/pose" % robot_id,
             "/gt/%s/odom" % robot_id,
         ],
@@ -118,8 +118,9 @@ def _write_report(path, bag_path, required_topics, summaries):
     missing = [topic for topic in required_topics if topic not in summaries]
     non_monotonic = [topic for topic, summary in summaries.items() if summary["non_monotonic"] > 0]
     zero_headers = [topic for topic, summary in summaries.items() if summary["zero_header_stamps"] > 0]
+    required_zero_headers = [topic for topic in required_topics if topic in summaries and summaries[topic]["zero_header_stamps"] > 0]
 
-    passed = len(missing) == 0 and len(non_monotonic) == 0
+    passed = len(missing) == 0 and len(non_monotonic) == 0 and len(required_zero_headers) == 0
 
     with open(path, "w") as handle:
         handle.write("# Dataset Run Validation\n\n")
@@ -148,6 +149,9 @@ def _write_report(path, bag_path, required_topics, summaries):
             for topic in zero_headers:
                 handle.write("- `%s`: %d messages\n" % (topic, summaries[topic]["zero_header_stamps"]))
             handle.write("\n")
+
+        if required_zero_headers:
+            handle.write("Required topics with zero header stamps fail validation.\n\n")
 
         handle.write("## Topic Summary\n\n")
         handle.write("| Topic | Type | Count | Rate Hz |\n")

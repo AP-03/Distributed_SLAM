@@ -4,14 +4,17 @@ topics:
   - /phasespace/rigids
   - /phasespace/markers
   - /phasespace/cameras
+  - /phasespace/stamped/rigids
+  - /phasespace/stamped/markers
+  - /phasespace/stamped/cameras
   - /phasespace/errors
-  - /gt/robot_01/pose
-  - /gt/robot_01/odom
-  - /gt/robot_01/status
-  - /robot_01/odom
-  - /robot_01/scan
-  - /robot_01/imu
-  - /robot_01/camera/color/image_raw
-  - /robot_01/camera/color/camera_info
-  - /robot_01/camera/depth/image_rect_raw
-  - /robot_01/camera/depth/camera_info
+  - /gt/{robot_id}/pose
+  - /gt/{robot_id}/odom
+  - /gt/{robot_id}/status
+  - /{robot_id}/odom
+  - /{robot_id}/scan
+  - /{robot_id}/imu
+  - /{robot_id}/camera/color/image_raw
+  - /{robot_id}/camera/color/camera_info
+  - /{robot_id}/camera/depth/image_rect_raw
+  - /{robot_id}/camera/depth/camera_info

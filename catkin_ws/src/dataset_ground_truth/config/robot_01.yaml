@@ -7,9 +7,9 @@
 # against the robot base_link frame.
 robot_id: robot_01
 rigid_body_id: 1
-world_frame: map
+world_frame: mocap_world
 child_frame: robot_01/gt_base_link
-input_topic: /phasespace/rigids
+input_topic: /phasespace/stamped/rigids
 
 publish_tf: true
 publish_path: true

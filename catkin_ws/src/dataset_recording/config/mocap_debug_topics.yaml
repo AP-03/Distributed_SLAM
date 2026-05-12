@@ -4,6 +4,9 @@ topics:
   - /phasespace/rigids
   - /phasespace/markers
   - /phasespace/cameras
+  - /phasespace/stamped/rigids
+  - /phasespace/stamped/markers
+  - /phasespace/stamped/cameras
   - /phasespace/errors
   - /mocap_debug/led_markers
   - /mocap_debug/led_paths
