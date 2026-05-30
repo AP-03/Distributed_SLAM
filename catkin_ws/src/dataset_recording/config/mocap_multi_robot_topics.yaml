@@ -1,7 +1,7 @@
 topics:
   - ^/tf$
   - ^/tf_static$
-  - ^/phasespace/(rigids|markers|cameras|errors)$
-  - ^/phasespace/stamped/(rigids|markers|cameras)$
+  - ^/phasespace/(rigids|cameras|errors)$
+  - ^/phasespace/stamped/(rigids|cameras)$
   - ^/gt/[^/]+/(pose|odom|path|status)$
-  - ^/mocap_debug/(led_markers|led_paths|rigid_markers|rigid_paths|status)$
+  - ^/mocap_debug/status$

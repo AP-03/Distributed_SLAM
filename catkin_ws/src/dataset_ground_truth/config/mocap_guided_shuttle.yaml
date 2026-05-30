@@ -1,0 +1,69 @@
+# Template for laptop-side mocap-guided straight shuttle control.
+#
+# The fleet launcher writes a generated config at run time. This file is useful
+# for direct roslaunch testing. Fill in host addresses before enabling robots.
+
+default_port: 11500
+command_rate: 20.0
+start_at_epoch: 0.0
+start_delay: 10.0
+start_stagger: 0.0
+shutdown_when_done: true
+
+defaults:
+  distance: 1.0
+  out_target_offset: 0.0
+  back_target_offset: 0.0
+  cycles: 10
+  max_speed: 0.14
+  min_speed: 0.025
+  along_kp: 0.45
+  cross_heading_kp: 0.60
+  heading_kp: 0.70
+  max_angular: 0.18
+  enable_lateral: false
+  cross_track_kp: 0.0
+  max_lateral: 0.0
+  distance_tolerance: 0.04
+  min_speed_distance: 0.08
+  cross_track_tolerance: 0.12
+  max_cross_track: 0.75
+  heading_tolerance_deg: 12.0
+  max_heading_error_deg: 90.0
+  heading_gate_deg: 60.0
+  max_cross_heading_offset_deg: 15.0
+  endpoint_requires_cross_track: false
+  endpoint_requires_heading: false
+  settle_time: 0.25
+  pause: 1.0
+  odom_timeout: 0.35
+  mocap_lost_timeout: 5.0
+  abort_on_mocap_loss: false
+  leg_timeout: 40.0
+  stuck_timeout: 10.0
+  progress_epsilon: 0.01
+
+robots:
+  - robot_id: robot_01
+    enabled: false
+    host: ""
+    port: 11500
+    pose_topic: /gt/robot_01/pose
+
+  - robot_id: robot_04
+    enabled: false
+    host: ""
+    port: 11500
+    pose_topic: /gt/robot_04/pose
+
+  - robot_id: robot_05
+    enabled: false
+    host: ""
+    port: 11500
+    pose_topic: /gt/robot_05/pose
+
+  - robot_id: robot_07
+    enabled: false
+    host: ""
+    port: 11500
+    pose_topic: /gt/robot_07/pose

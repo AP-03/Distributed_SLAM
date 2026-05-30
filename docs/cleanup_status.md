@@ -1,44 +1,49 @@
 # Cleanup Status
 
-This file tracks repository hygiene issues that should be fixed before large
-renames, submodule moves, or release tagging.
+This file records repository hygiene issues that affect reproducibility or
+release packaging.
 
-## Current Blockers
+## Submission State
 
-### `external/robot_runtime` is mid-merge
+The ROS dataset packages and benchmark helper scripts are organized for the
+coursework submission. Local datasets, build folders, virtual environments, and
+third-party checkouts are ignored by git.
 
-The robot runtime submodule is currently ahead/behind its remote and has
-unresolved conflicts in:
+The benchmark tooling has been narrowed to the defensible pipeline described in
+[`benchmarking_method.md`](benchmarking_method.md). Helpers for odometry-only
+MESA plots, path-shape metrics, and ground-truth/oracle constraints have been
+removed from the reportable toolset.
 
-```text
-agv_ws/src/agv_bringup/launch/bringup.launch
-scripts/logging/start_session.sh
-scripts/setup_robot.sh
-```
+## Remaining External Repository Issues
 
-Resolve this inside `external/robot_runtime`, commit it there, then commit the
-updated submodule pointer in the parent repo.
+### `external/agv_on_board`
 
-### `external/agv_on_board` has broken nested submodule metadata
-
-`external/agv_on_board` contains gitlink entries for:
+Recursive submodule status still fails inside `external/agv_on_board` because
+that repository contains nested gitlinks without matching `.gitmodules`
+entries:
 
 ```text
 drivers/librealsense
 drivers/teleop_twist_keyboard
 ```
 
-but does not contain matching `.gitmodules` entries. Because of that,
-`git submodule status --recursive` fails when it reaches `external/agv_on_board`.
+This is an upstream/submodule hygiene issue, not a dataset package issue. Do
+not edit around it in the parent repository. Either fix the nested submodule
+metadata inside `external/agv_on_board` or retire that duplicate robot-side
+repository after confirming `external/robot_runtime` is the source of truth.
 
-Either add the missing nested `.gitmodules` entries in `external/agv_on_board`,
-remove those gitlinks if they are obsolete, or retire this duplicate robot-side
-submodule after confirming `external/robot_runtime` is the source of truth.
+### Robot Runtime Working Tree
 
-## Recommended Cleanup Order
+The robot runtime submodule contains local robot-side logging changes. Those
+changes should be committed inside the relevant submodule before updating the
+parent repository pointer.
 
-1. Resolve and commit `external/robot_runtime`.
-2. Decide whether `external/agv_on_board` is still needed.
-3. Fix or retire `external/agv_on_board` nested submodules.
-4. Commit the parent repo with clean submodule pointers.
-5. Remove or archive duplicate robot runtime code once one source of truth is chosen.
+## Pre-Submission Checklist
+
+- `git status --short` should show only intended source/doc/config changes.
+- `runs/`, `deps/`, `.venvs/`, local MESA builds, and generated plots should
+  not be committed.
+- `tools/mesa_benchmark/run_mesa_frontend_pipeline.sh` should be the only
+  frontend-to-MESA benchmark entry point used for reportable results.
+- EVO tables should be traceable to saved TUM trajectories and a mapping CSV.
+- Any mocap exclusion windows should have a written diagnostic reason.

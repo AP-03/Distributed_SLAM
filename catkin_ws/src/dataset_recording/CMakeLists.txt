@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package()
 
 catkin_install_python(PROGRAMS
+  scripts/compact_mocap_bag.py
   scripts/record_one_robot.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

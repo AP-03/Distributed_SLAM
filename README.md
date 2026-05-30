@@ -88,6 +88,7 @@ submodule first, then commit the updated submodule pointer in this parent repo.
 ## Documentation
 
 - [Experiment workflow](docs/experiment_workflow.md)
+- [Benchmarking method](docs/benchmarking_method.md)
 - [Repository organization](docs/repo_organization.md)
 - [Cleanup status](docs/cleanup_status.md)
 - [Contribution and PR rules](CONTRIBUTING.md)

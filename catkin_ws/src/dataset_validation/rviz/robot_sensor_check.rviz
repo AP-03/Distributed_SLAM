@@ -1,0 +1,142 @@
+Panels:
+  - Class: rviz/Displays
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Global Options1
+        - /Robot Model1
+        - /Odometry Path1
+        - /IMU Markers1
+      Splitter Ratio: 0.5
+  - Class: rviz/Views
+    Name: Views
+  - Class: rviz/Time
+    Name: Time
+    SyncMode: 0
+    SyncSource: LaserScan
+
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz/Grid
+      Name: Grid
+      Plane: XY
+      Plane Cell Count: 30
+      Cell Size: 0.5
+      Color: 100; 100; 100
+      Alpha: 0.35
+      Enabled: true
+      Reference Frame: odom
+
+    - Class: rviz/RobotModel
+      Name: Robot Model
+      Robot Description: robot_description
+      TF Prefix: ""
+      Alpha: 0.85
+      Update Interval: 0
+      Enabled: true
+
+    - Class: rviz/TF
+      Name: TF
+      Marker Scale: 0.25
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Update Interval: 0
+      Frame Timeout: 15
+      Frames:
+        All Enabled: true
+      Enabled: false
+
+    - Class: rviz/LaserScan
+      Name: LaserScan
+      Topic: /scan
+      Queue Size: 5
+      Size (m): 0.03
+      Style: Points
+      Color Transformer: FlatColor
+      Color: 0; 170; 255
+      Alpha: 0.75
+      Decay Time: 2
+      Enabled: true
+
+    - Class: rviz/Odometry
+      Name: Odometry Arrows
+      Topic: /odom
+      Keep: 300
+      Position Tolerance: 0.05
+      Angle Tolerance: 0.1
+      Color: 255; 80; 80
+      Alpha: 0.75
+      Shape: Arrow
+      Enabled: true
+
+    - Class: rviz/Path
+      Name: Odometry Path
+      Topic: /odom/path
+      Color: 255; 50; 50
+      Alpha: 1
+      Buffer Length: 1
+      Line Style: Lines
+      Line Width: 0.04
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0.02
+      Enabled: true
+
+    - Class: rviz/MarkerArray
+      Name: IMU Markers
+      Marker Topic: /imu/markers
+      Queue Size: 10
+      Enabled: true
+
+    - Class: rviz/Image
+      Name: Color Image
+      Image Topic: /camera/color/image_raw
+      Transport Hint: raw
+      Queue Size: 2
+      Enabled: false
+
+    - Class: rviz/Image
+      Name: Aligned Depth Image
+      Image Topic: /camera/aligned_depth_to_color/image_raw
+      Transport Hint: raw
+      Queue Size: 2
+      Enabled: false
+
+  Enabled: true
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: odom
+    Frame Rate: 30
+  Tools:
+    - Class: rviz/MoveCamera
+    - Class: rviz/FocusCamera
+    - Class: rviz/Measure
+  Value: true
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Name: Orbit
+      Distance: 8
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.05
+      Invert Z Axis: false
+      Near Clip Distance: 0.01
+      Pitch: 1.0
+      Target Frame: base_footprint
+      Yaw: 3.14
+    Saved: ~
+
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 900
+  Width: 1400
+  X: 50
+  Y: 50

@@ -1,0 +1,80 @@
+<launch>
+  <arg name="server_ip" default="192.168.1.25"/>
+  <arg name="frame_id" default="mocap_world"/>
+  <arg name="ground_truth_config" default="$(find dataset_ground_truth)/config/multi_robot_markers.yaml"/>
+  <arg name="controller_config" default="$(find dataset_ground_truth)/config/mocap_guided_shuttle.yaml"/>
+
+  <arg name="run_id" default="mocap_guided_shuttle_run"/>
+  <arg name="output_root" default="$(env HOME)/Distributed_SLAM/runs"/>
+  <arg name="operator" default="$(env USER)"/>
+  <arg name="notes" default="mocap-guided multi-robot shuttle capture; robots recorded locally"/>
+  <arg name="show_rviz" default="true"/>
+  <arg name="debug_visualizer" default="true"/>
+  <arg name="rviz_config" default="$(find dataset_ground_truth)/rviz/mocap_collection_light.rviz"/>
+  <arg name="start_mocap_core" default="true"/>
+  <arg name="start_at_epoch" default="0.0"/>
+  <arg name="start_delay" default="0.0"/>
+
+  <group if="$(arg start_mocap_core)">
+    <node name="phasespace_bringup"
+          pkg="phasespace_bringup"
+          type="phasespace_bringup_node"
+          output="screen">
+      <param name="server_ip" value="$(arg server_ip)"/>
+    </node>
+
+    <node name="phasespace_retimestamp"
+          pkg="dataset_ground_truth"
+          type="phasespace_retimestamp_node.py"
+          output="screen">
+      <param name="frame_id" value="$(arg frame_id)"/>
+    </node>
+
+    <include file="$(find dataset_ground_truth)/launch/multi_marker_ground_truth.launch">
+      <arg name="config" value="$(arg ground_truth_config)"/>
+      <arg name="world_frame" value="$(arg frame_id)"/>
+    </include>
+
+    <node if="$(arg debug_visualizer)"
+          name="mocap_debug_visualizer"
+          pkg="dataset_ground_truth"
+          type="mocap_debug_visualizer.py"
+          output="screen">
+      <param name="fixed_frame" value="$(arg frame_id)"/>
+      <param name="markers_topic" value="/phasespace/stamped/markers"/>
+      <param name="rigids_topic" value="/phasespace/stamped/rigids"/>
+    </node>
+
+    <node if="$(arg show_rviz)"
+          name="mocap_recording_rviz"
+          pkg="rviz"
+          type="rviz"
+          args="-d $(arg rviz_config)"
+          output="screen"/>
+  </group>
+
+  <node name="mocap_guided_shuttle_controller"
+        pkg="dataset_ground_truth"
+        type="mocap_guided_shuttle_controller.py"
+        output="screen"
+        required="true">
+    <rosparam command="load" file="$(arg controller_config)"/>
+    <param name="start_at_epoch" value="$(arg start_at_epoch)"/>
+    <param name="start_delay" value="$(arg start_delay)"/>
+  </node>
+
+  <node name="record_mocap_guided_shuttle"
+        pkg="dataset_recording"
+        type="record_one_robot.py"
+        output="screen"
+        required="true">
+    <param name="robot_id" value="mocap"/>
+    <param name="scenario" value="mocap_guided_shuttle"/>
+    <param name="run_id" value="$(arg run_id)"/>
+    <param name="output_root" value="$(arg output_root)"/>
+    <param name="operator" value="$(arg operator)"/>
+    <param name="notes" value="$(arg notes)"/>
+    <param name="regex" value="true"/>
+    <rosparam command="load" file="$(find dataset_recording)/config/mocap_multi_robot_topics.yaml"/>
+  </node>
+</launch>

@@ -1,0 +1,39 @@
+<launch>
+  <arg name="show_rviz" default="true"/>
+  <arg name="robot_urdf" default="$(find robot_description)/urdf/assembly.urdf"/>
+  <arg name="rviz_config" default="$(find dataset_validation)/rviz/robot_sensor_check.rviz"/>
+
+  <param name="/use_sim_time" value="false"/>
+  <param name="robot_description" textfile="$(arg robot_urdf)"/>
+
+  <node name="robot_state_publisher"
+        pkg="robot_state_publisher"
+        type="robot_state_publisher"
+        output="screen"/>
+
+  <node name="odom_to_path"
+        pkg="dataset_validation"
+        type="odom_to_path.py"
+        output="screen">
+    <param name="odom_topic" value="/odom"/>
+    <param name="path_topic" value="/odom/path"/>
+    <param name="max_length" value="20000"/>
+    <param name="downsample" value="1"/>
+  </node>
+
+  <node name="imu_marker_visualizer"
+        pkg="dataset_validation"
+        type="imu_marker_visualizer.py"
+        output="screen">
+    <param name="imu_topic" value="/imu"/>
+    <param name="marker_topic" value="/imu/markers"/>
+    <param name="fallback_frame" value="imu_link"/>
+  </node>
+
+  <node if="$(arg show_rviz)"
+        name="robot_sensor_check_rviz"
+        pkg="rviz"
+        type="rviz"
+        args="-d $(arg rviz_config)"
+        output="screen"/>
+</launch>

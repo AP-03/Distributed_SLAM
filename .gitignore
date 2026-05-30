@@ -5,6 +5,18 @@ runs/
 *.bag.active
 *.db3
 *.mcap
+*.db
+*.cbor
+*.jrl
+*.jrm
+
+### Local third-party checkouts and virtual environments
+.venvs/
+deps/
+mesa/
+hyperion/
+ORKAR_benchmarking/
+external/myagv_ros/
 
 ### ROS / catkin generated files
 catkin_ws/build/
@@ -31,3 +43,5 @@ Zone.Identifier
 ### Generated TF frame graph artifacts
 catkin_ws/frames.pdf
 catkin_ws/frames.gv
+a.dot
+/4

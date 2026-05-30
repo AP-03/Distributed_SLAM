@@ -52,3 +52,15 @@ robots:
     child_frame: robot_05/gt_base_link
     rigid_to_base_xyz: [0.0, 0.0, 0.0]
     rigid_to_base_rpy: [0.0, 0.0, 0.0]
+    
+  - robot_id: robot_06
+    rigid_body_id: 6
+    child_frame: robot_06/gt_base_link
+    rigid_to_base_xyz: [0.0, 0.0, 0.0]
+    rigid_to_base_rpy: [0.0, 0.0, 0.0]
+
+  - robot_id: robot_07
+    rigid_body_id: 7
+    child_frame: robot_07/gt_base_link
+    rigid_to_base_xyz: [0.0, 0.0, 0.0]
+    rigid_to_base_rpy: [0.0, 0.0, 0.0]

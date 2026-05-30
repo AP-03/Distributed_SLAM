@@ -174,3 +174,15 @@ A one-robot pilot run is accepted when:
 - Mocap and robot data overlap in time.
 - `dataset_validation` produces `PASS` or only known, documented warnings.
 - A quick trajectory plot from `slam_comparison` is plausible.
+
+## Offline Benchmarking
+
+After a multi-robot dataset has passed validation, process it with the
+benchmarking workflow in [Benchmarking Method](benchmarking_method.md). Keep the
+frontend outputs, AprilTag constraint diagnostics, MESA result files, EVO zips,
+and mapping CSV under the matching `runs/<run_id>/eval/` or
+`runs/<run_id>/processed/` directories.
+
+Only frontend-derived or fiducial-derived constraints should be used for the
+submitted MESA benchmark. Mocap is reserved for evaluation and clock/label
+alignment.

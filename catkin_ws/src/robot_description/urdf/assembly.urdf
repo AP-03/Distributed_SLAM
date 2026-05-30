@@ -15,6 +15,11 @@
       base_link:   [-299.832,  24.717,   33.859]
       camera_link: [-254.500, 142.000, -160.000]
       laser_frame: [-320.430, 118.347,  -40.346]
+
+    Fusion/STL axes are mapped into ROS as:
+      ROS X forward = -Fusion Z
+      ROS Y left    = -Fusion X
+      ROS Z up      =  Fusion Y
   -->
 
   <material name="assembly_grey">
@@ -44,10 +49,11 @@
     <child link="assembly_mesh_link"/>
     <!--
       The STL was exported in the Fusion coordinate frame. This origin shifts
-      the measured CAD base_link point onto the URDF base_link frame.
+      and rotates the measured CAD base_link point onto the URDF base_link
+      frame.
       Mesh units are millimeters, hence the 0.001 scale below.
     -->
-    <origin xyz="0.299832 -0.024717 -0.033859" rpy="0 0 0"/>
+    <origin xyz="0.033859 -0.299832 -0.024717" rpy="1.57079632679 0 -1.57079632679"/>
   </joint>
   <link name="assembly_mesh_link">
     <visual>
@@ -60,7 +66,8 @@
 
   <!--
     Lidar frame.
-    Translation is from the measured Fusion point relative to base_link:
+    Translation is from the measured Fusion point relative to base_link,
+    mapped into ROS axes:
       [-320.430, 118.347, -40.346] - [-299.832, 24.717, 33.859] mm.
     TODO: replace rpy with the measured sensor orientation if the lidar frame
     axes are not aligned with base_link. The robot bag has used `laser_frame`.
@@ -68,7 +75,7 @@
   <joint name="base_to_laser_frame" type="fixed">
     <parent link="base_link"/>
     <child link="laser_frame"/>
-    <origin xyz="-0.020598 0.093630 -0.074205" rpy="0 0 0"/>
+    <origin xyz="0.074205 0.020598 0.093630" rpy="0 0 0"/>
   </joint>
   <link name="laser_frame">
     <visual>
@@ -90,7 +97,8 @@
 
   <!--
     Camera frames.
-    Translation is from the measured Fusion point relative to base_link:
+    Translation is from the measured Fusion point relative to base_link,
+    mapped into ROS axes:
       [-254.500, 142.000, -160.000] - [-299.832, 24.717, 33.859] mm.
     TODO: replace base_to_camera_link rpy with the measured camera body
     orientation if the camera frame axes are not aligned with base_link. The
@@ -99,7 +107,7 @@
   <joint name="base_to_camera_link" type="fixed">
     <parent link="base_link"/>
     <child link="camera_link"/>
-    <origin xyz="0.045332 0.117283 -0.193859" rpy="0 0 0"/>
+    <origin xyz="0.193859 -0.045332 0.117283" rpy="0 0 0"/>
   </joint>
   <link name="camera_link">
     <visual>

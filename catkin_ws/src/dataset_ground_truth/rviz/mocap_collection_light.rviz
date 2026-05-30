@@ -4,10 +4,12 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /LED Markers1
-        - /LED Paths1
-        - /Rigid Bodies1
-        - /Rigid Paths1
+        - /Robot 01 GT Path1
+        - /Robot 02 GT Path1
+        - /Robot 03 GT Path1
+        - /Robot 04 GT Path1
+        - /Robot 05 GT Path1
+        - /Robot 06 GT Path1
         - /TF1
       Splitter Ratio: 0.5
   - Class: rviz/Views
@@ -24,30 +26,6 @@ Visualization Manager:
       Color: 160; 160; 160
       Alpha: 0.35
       Value: true
-    - Class: rviz/MarkerArray
-      Enabled: true
-      Name: LED Markers
-      Marker Topic: /mocap_debug/led_markers
-      Queue Size: 100
-      Value: true
-    - Class: rviz/MarkerArray
-      Enabled: true
-      Name: LED Paths
-      Marker Topic: /mocap_debug/led_paths
-      Queue Size: 100
-      Value: true
-    - Class: rviz/MarkerArray
-      Enabled: true
-      Name: Rigid Bodies
-      Marker Topic: /mocap_debug/rigid_markers
-      Queue Size: 100
-      Value: true
-    - Class: rviz/MarkerArray
-      Enabled: true
-      Name: Rigid Paths
-      Marker Topic: /mocap_debug/rigid_paths
-      Queue Size: 100
-      Value: true
     - Class: rviz/Path
       Enabled: true
       Name: Robot 01 GT Path
@@ -56,7 +34,7 @@ Visualization Manager:
       Line Style: Lines
       Line Width: 0.04
       Pose Style: None
-      Queue Size: 10
+      Queue Size: 2
       Value: true
     - Class: rviz/Path
       Enabled: true
@@ -66,7 +44,7 @@ Visualization Manager:
       Line Style: Lines
       Line Width: 0.04
       Pose Style: None
-      Queue Size: 10
+      Queue Size: 2
       Value: true
     - Class: rviz/Path
       Enabled: true
@@ -76,7 +54,7 @@ Visualization Manager:
       Line Style: Lines
       Line Width: 0.04
       Pose Style: None
-      Queue Size: 10
+      Queue Size: 2
       Value: true
     - Class: rviz/Path
       Enabled: true
@@ -86,7 +64,7 @@ Visualization Manager:
       Line Style: Lines
       Line Width: 0.04
       Pose Style: None
-      Queue Size: 10
+      Queue Size: 2
       Value: true
     - Class: rviz/Path
       Enabled: true
@@ -96,7 +74,7 @@ Visualization Manager:
       Line Style: Lines
       Line Width: 0.04
       Pose Style: None
-      Queue Size: 10
+      Queue Size: 2
       Value: true
     - Class: rviz/Path
       Enabled: true
@@ -106,7 +84,7 @@ Visualization Manager:
       Line Style: Lines
       Line Width: 0.04
       Pose Style: None
-      Queue Size: 10
+      Queue Size: 2
       Value: true
     - Class: rviz/TF
       Enabled: true
@@ -114,15 +92,15 @@ Visualization Manager:
       Show Arrows: true
       Show Axes: true
       Show Names: true
-      Marker Scale: 0.4
-      Frame Timeout: 15
+      Marker Scale: 0.25
+      Frame Timeout: 5
       Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
     Fixed Frame: mocap_world
-    Frame Rate: 30
+    Frame Rate: 15
   Name: root
   Tools:
     - Class: rviz/Interact
